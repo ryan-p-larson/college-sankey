@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<svg width="960" height="500"></svg>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://unpkg.com/d3-sankey@0.6"></script>
+<script>
+
+var svg = d3.select("svg"),
+    width = +svg.attr("width"),
+    height = +svg.attr("height");
+
+var x_0 = d3.scaleBand()
+        .domain([1, 2, 3, 4])
+        .paddingInner(0.1)
+        .rangeRound([0, width]),
+    x_1 = d3.scaleBand()
+        .domain([1, 2])
+        .padding(0.05),
+    y = d3.scaleBand()
+        .domain(["CS", "PSY", "MSCI", "PHIL", "IE", "GEOG", "STAT", "CINE", "MATH", "ANTH", "RELS"])
+        .range([0, height]),
+    color = d3.scaleOrdinal(d3.schemeCategory10);
+
+var sankey = d3.sankey()
+    .nodeWidth(15)
+    .nodePadding(10)
+    .extent([[1, 1], [width - 1, height - 6]]);
+
+var link = svg.append("g")
+    .attr("class", "links")
+    .attr("fill", "none")
+    .attr("stroke", "#000")
+    .attr("stroke-opacity", 0.2)
+  .selectAll("path");
+
+var node = svg.append("g")
+    .attr("class", "nodes")
+    .attr("font-family", "sans-serif")
+    .attr("font-size", 10)
+  .selectAll("g");
+
+d3.json("data/courses.json", function(error, courses) {
+  if (error) throw error;
+
+  // Scaling
+  x_1.rangeRound([0, x_0.bandwidth()]);
+
+
+
+  courses.courses.forEach(function(d) {
+    d.subject = d.course.split(":")[0];
+    return d;
+  });
+  var subjects = d3.set(courses.courses.map(function(d) { return d.subject; }));
+
+
+  console.log(courses, subjects);
+
+  var nodes = svg.append('g').selectAll('.node')
+      .data(courses.courses)
+      .enter().append('g')
+      .attr('class', 'node');
+  nodes.append('rect')
+      .attr('transform', function(d) { return 'translate(' + x_0(d.year) + ',0)'; })
+      .attr('x', function(d) { return x_1(d.semester); })
+      .attr('width', x_1.bandwidth())
+      .attr('y', function(d) { return y(d.subject); })
+      .attr('height', 50);
+
+  /*
+  var nodeMap = {};
+  graph.nodes.forEach(function(x) { nodeMap[x.name] = x; });
+  graph.links = graph.links.map(function(x) {
+    return {
+      source: nodeMap[x.source],
+      target: nodeMap[x.target],
+      value: x.value
+    };
+  });
+  */
+});
+
+</script>
