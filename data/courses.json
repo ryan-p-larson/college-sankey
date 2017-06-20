@@ -1,0 +1,354 @@
+{
+  "courses": [
+    {
+      "course": "CINE:12602",
+      "name": "Survey of Film",
+      "hours": 3,
+      "year": 1,
+      "semester": 1
+    },
+    {
+      "course": "MATH:1850",
+      "name": "Calculus I",
+      "hours": 5,
+      "year": 1,
+      "semester": 1
+    },
+    {
+      "course": "PSY:2601",
+      "name": "Introduction to Cognitive Psychology",
+      "hours": 3,
+      "year": 1,
+      "semester": 1
+    },
+    {
+      "course": "ANTH:1301",
+      "name": "Human Origins",
+      "hours": 3,
+      "year": 1,
+      "semester": 1
+    },
+    {
+      "course": "PSY:1001",
+      "name": "Elementary Psychology",
+      "hours": 3,
+      "year": 1,
+      "semester": 2
+    },
+    {
+      "course": "RELS:1903",
+      "name": "Quest for Human Destiny",
+      "hours": 3,
+      "year": 1,
+      "semester": 2
+    },
+    {
+      "course": "STAT:1030",
+      "name": "Statistics for Business",
+      "hours": 4,
+      "year": 1,
+      "semester": 2
+    },
+    {
+      "course": "CS:1110",
+      "name": "Introduction to Computer Science",
+      "hours": 3,
+      "year": 1,
+      "semester": 2
+    },
+    {
+      "course": "CS:2110",
+      "name": "Introduction to Informatics",
+      "hours": 3,
+      "year": 1,
+      "semester": 2
+    },
+    {
+      "course": "GEOG:1090",
+      "name": "Globalization and Geographic Diversity",
+      "hours": 3,
+      "year": 2,
+      "semester": 1
+    },
+    {
+      "course": "MATH:1020",
+      "name": "Elementary Functions",
+      "hours": 4,
+      "year": 2,
+      "semester": 1
+    },
+    {
+      "course": "PSY:2810",
+      "name": "Research Methods in Psychology",
+      "hours": 4,
+      "year": 2,
+      "semester": 1
+    },
+    {
+      "course": "CS:2620",
+      "name": "Networking and Security for Informatics",
+      "hours": 3,
+      "year": 2,
+      "semester": 2
+    },
+    {
+      "course": "CS:4980-1",
+      "name": "Information Visualization",
+      "hours": 3,
+      "year": 2,
+      "semester": 2
+    },
+    {
+      "course": "IE:3450",
+      "name": "Ergonomics",
+      "hours": 3,
+      "year": 2,
+      "semester": 2
+    },
+    {
+      "course": "PSY:2401",
+      "name": "Introduction to Developmental Science",
+      "hours": 3,
+      "year": 2,
+      "semester": 2
+    },
+    {
+      "course": "CS:2210",
+      "name": "Discrete Structures",
+      "hours": 3,
+      "year": 3,
+      "semester": 1
+    },
+    {
+      "course": "CS:2520",
+      "name": "Human-Computer Interaction",
+      "hours": 3,
+      "year": 3,
+      "semester": 1
+    },
+    {
+      "course": "MATH:1850-2",
+      "name": "Calculus",
+      "hours": 4,
+      "year": 3,
+      "semester": 1
+    },
+    {
+      "course": "MSCI:3200",
+      "name": "Database Management",
+      "hours": 3,
+      "year": 3,
+      "semester": 1
+    },
+    {
+      "course": "PSY:2501",
+      "name": "Introduction to Social Psychology",
+      "hours": 3,
+      "year": 3,
+      "semester": 1
+    },
+    {
+      "course": "ANTH:1061",
+      "name": "Origins of Life in the Universe",
+      "hours": 4,
+      "year": 3,
+      "semester": 2
+    },
+    {
+      "course": "CS:2230",
+      "name": "Data Structures",
+      "hours": 4,
+      "year": 3,
+      "semester": 2
+    },
+    {
+      "course": "CS:4500",
+      "name": "Research Methods in Human-Computer Interaction",
+      "hours": 3,
+      "year": 3,
+      "semester": 2
+    },
+    {
+      "course": "PHIL:1033",
+      "name": "The Meaning of Life",
+      "hours": 3,
+      "year": 3,
+      "semester": 2
+    },
+    {
+      "course": "CS:3330",
+      "name": "Algorithms",
+      "hours": 3,
+      "year": 4,
+      "semester": 1
+    },
+    {
+      "course": "CS:3910",
+      "name": "Informatics Project",
+      "hours": 3,
+      "year": 4,
+      "semester": 1
+    },
+    {
+      "course": "CS:4480",
+      "name": "Knowledge Discovery",
+      "hours": 3,
+      "year": 4,
+      "semester": 1
+    },
+    {
+      "course": "CS:4980-2",
+      "name": "Networking Security and Privacy",
+      "hours": 3,
+      "year": 4,
+      "semester": 1
+    },
+    {
+      "course": "PHIL:2542",
+      "name": "Minds and Brains",
+      "hours": 3,
+      "year": 4,
+      "semester": 1
+    },
+    {
+      "course": "CS:4420",
+      "name": "Artificial Intelligence",
+      "hours": 3,
+      "year": 4,
+      "semester": 2
+    },
+    {
+      "course": "GEOG:1050",
+      "name": "Foundations of GIS",
+      "hours": 3,
+      "year": 4,
+      "semester": 2
+    },
+    {
+      "course": "GEOG:2540",
+      "name": "Introduction to Geographic Visualization",
+      "hours": 3,
+      "year": 4,
+      "semester": 2
+    },
+    {
+      "course": "PHIL:1401",
+      "name": "Matters of Life and Death",
+      "hours": 3,
+      "year": 4,
+      "semester": 2
+    }
+  ],
+  "links": [
+    {
+      "source": "CS:1110",
+      "target": "CS:2110",
+      "value": 1
+    },
+    {
+      "source": "PSY:1001",
+      "target": "PSY:2810",
+      "value": 1
+    },
+    {
+      "source": "STAT:1030",
+      "target": "PSY:2810",
+      "value": 1
+    },
+    {
+      "source": "CS:2110",
+      "target": "CS:2620",
+      "value": 1
+    },
+    {
+      "source": "CS:2110",
+      "target": "CS:4980-1",
+      "value": 1
+    },
+    {
+      "source": "PSY:1001",
+      "target": "PSY:2401",
+      "value": 1
+    },
+    {
+      "source": "CS:1110",
+      "target": "CS:2210",
+      "value": 1
+    },
+    {
+      "source": "CS:2110",
+      "target": "CS:2520",
+      "value": 1
+    },
+    {
+      "source": "MATH:1020",
+      "target": "MATH:1850-2",
+      "value": 1
+    },
+    {
+      "source": "CS:2110",
+      "target": "MSCI:3200",
+      "value": 1
+    },
+    {
+      "source": "PSY:1001",
+      "target": "PSY:2501",
+      "value": 1
+    },
+    {
+      "source": "CS:2210",
+      "target": "CS:2230",
+      "value": 1
+    },
+    {
+      "source": "CS:2520",
+      "target": "CS:4500",
+      "value": 1
+    },
+    {
+      "source": "CS:2210",
+      "target": "CS:3330",
+      "value": 1
+    },
+    {
+      "source": "CS:2230",
+      "target": "CS:3330",
+      "value": 1
+    },
+    {
+      "source": "CS:2110",
+      "target": "CS:3910",
+      "value": 1
+    },
+    {
+      "source": "CS:2520",
+      "target": "CS:3910",
+      "value": 1
+    },
+    {
+      "source": "MSCI:3200",
+      "target": "CS:3910",
+      "value": 1
+    },
+    {
+      "source": "CS:2110",
+      "target": "CS:4980-2",
+      "value": 1
+    },
+    {
+      "source": "CS:2230",
+      "target": "CS:4980-2",
+      "value": 1
+    },
+    {
+      "source": "CS:3330",
+      "target": "CS:4420",
+      "value": 1
+    },
+    {
+      "source": "GEOG:1050",
+      "target": "GEOG:3540",
+      "value": 1
+    }
+  ]
+}
