@@ -1,11 +1,21 @@
 <!DOCTYPE html>
 <script src="https://d3js.org/d3.v4.min.js"></script>
-<!-- <script src="https://unpkg.com/d3-sankey@0.7"></script> -->
-<script src="src/d3-sankey.js"></script>
+<script src="https://unpkg.com/d3-sankey@0.7"></script>
+
 
 <style>
   .axis--x path {
     display: none;
+  }
+  .axis {
+    font-weight: bold;
+  }
+  .chartLabel {
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    font-size: 12px;
+    fill: #333;
+    text-anchor: start;
   }
 </style>
 
@@ -144,25 +154,18 @@ d3.json("data/courses.json", function(error, courses) {
     //.attr('transform', 'translate(0,' + (height + margin.bottom*.75) + ')')
     .call(d3.axisLeft(y_1))
     .append("text")
+      .attr('class', 'chartLabel')
       .attr('x', 5)
       .attr("y", 5)
       .attr("dy", "0.71em")
-      .attr("fill", "#333")
-      .attr('font-weight', 'bold')
-      .style('font-size', '12px')
-      .style('text-anchor', 'start')
       .text("Course Number");
 
   // Legend Title
   marks.append('text')
+      .attr('class', 'chartLabel')
       .attr('x', -(margin.left * 0.97))
       .attr('y', 5)
-      .attr('font-weight', 'bold')
       .attr("dy", "0.71em")
-      .attr("fill", "#333")
-      .style('font-family', 'Arial, sans-serif')
-      .style('font-size', '12px')
-      .style('text-anchor', 'start')
       .text('Course Credit')
   var legend = marks.append("g")
     .attr("font-family", "sans-serif")
