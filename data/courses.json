@@ -1,7 +1,7 @@
 {
-  "courses": [
+  "nodes": [
     {
-      "course": "CINE:12602",
+      "course": "CINE:1260",
       "name": "Survey of Film",
       "hours": 3,
       "year": 1,
@@ -16,7 +16,7 @@
     },
     {
       "course": "PSY:2601",
-      "name": "Introduction to Cognitive Psychology",
+      "name": "Intro to Cognitive Psychology",
       "hours": 3,
       "year": 1,
       "semester": 1
@@ -51,14 +51,14 @@
     },
     {
       "course": "CS:1110",
-      "name": "Introduction to Computer Science",
+      "name": "Intro to Comp Sci",
       "hours": 3,
       "year": 1,
-      "semester": 2
+      "semester": 1
     },
     {
       "course": "CS:2110",
-      "name": "Introduction to Informatics",
+      "name": "Programming for Informatics",
       "hours": 3,
       "year": 1,
       "semester": 2
@@ -86,7 +86,7 @@
     },
     {
       "course": "CS:2620",
-      "name": "Networking and Security for Informatics",
+      "name": "Networking for Informatics",
       "hours": 3,
       "year": 2,
       "semester": 2
@@ -107,7 +107,7 @@
     },
     {
       "course": "PSY:2401",
-      "name": "Introduction to Developmental Science",
+      "name": "Developmental Science",
       "hours": 3,
       "year": 2,
       "semester": 2
@@ -142,13 +142,13 @@
     },
     {
       "course": "PSY:2501",
-      "name": "Introduction to Social Psychology",
+      "name": "Intro to Social Psychology",
       "hours": 3,
       "year": 3,
       "semester": 1
     },
     {
-      "course": "ANTH:1061",
+      "course": "ANTH:1161",
       "name": "Origins of Life in the Universe",
       "hours": 4,
       "year": 3,
@@ -163,7 +163,7 @@
     },
     {
       "course": "CS:4500",
-      "name": "Research Methods in Human-Computer Interaction",
+      "name": "Research Methods in HCI",
       "hours": 3,
       "year": 3,
       "semester": 2
@@ -198,7 +198,7 @@
     },
     {
       "course": "CS:4980-2",
-      "name": "Networking Security and Privacy",
+      "name": "Network Security and Privacy",
       "hours": 3,
       "year": 4,
       "semester": 1
@@ -225,8 +225,8 @@
       "semester": 2
     },
     {
-      "course": "GEOG:2540",
-      "name": "Introduction to Geographic Visualization",
+      "course": "GEOG:3540",
+      "name": "Geographic Visualization",
       "hours": 3,
       "year": 4,
       "semester": 2
