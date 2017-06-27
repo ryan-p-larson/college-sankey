@@ -5,238 +5,272 @@
       "name": "Survey of Film",
       "hours": 3,
       "year": "Freshman",
-      "semester": 1
+      "semester": 1,
+      "credit": "Elective"
     },
     {
       "course": "MATH:1850",
       "name": "Calculus I",
       "hours": 5,
       "year": "Freshman",
-      "semester": 1
+      "semester": 1,
+      "credit": "Elective"
     },
     {
       "course": "PSY:2601",
       "name": "Intro to Cognitive Psychology",
       "hours": 3,
       "year": "Freshman",
-      "semester": 1
+      "semester": 1,
+      "credit": "Psychology Minor"
     },
     {
       "course": "ANTH:1301",
       "name": "Human Origins",
       "hours": 3,
       "year": "Freshman",
-      "semester": 1
+      "semester": 1,
+      "credit": "Elective"
     },
     {
       "course": "PSY:1001",
       "name": "Elementary Psychology",
       "hours": 3,
       "year": "Freshman",
-      "semester": 2
+      "semester": 2,
+      "credit": "Psychology Minor"
     },
     {
       "course": "RELS:1903",
       "name": "Quest for Human Destiny",
       "hours": 3,
       "year": "Freshman",
-      "semester": 2
+      "semester": 2,
+      "credit": "Elective"
     },
     {
       "course": "STAT:1030",
       "name": "Statistics for Business",
       "hours": 4,
       "year": "Freshman",
-      "semester": 2
+      "semester": 2,
+      "credit": "Informatics Major"
     },
     {
       "course": "CS:1110",
       "name": "Intro to Comp Sci",
       "hours": 3,
       "year": "Freshman",
-      "semester": 1
+      "semester": 1,
+      "credit": "Informatics Major"
     },
     {
       "course": "CS:2110",
       "name": "Programming for Informatics",
       "hours": 3,
       "year": "Freshman",
-      "semester": 2
+      "semester": 2,
+      "credit": "Informatics Major"
     },
     {
       "course": "GEOG:1090",
       "name": "Globalization and Geographic Diversity",
       "hours": 3,
       "year": "Sophomore",
-      "semester": 1
+      "semester": 1,
+      "credit": "Elective"
     },
     {
       "course": "MATH:1020",
       "name": "Elementary Functions",
       "hours": 4,
       "year": "Sophomore",
-      "semester": 1
+      "semester": 1,
+      "credit": "Elective"
     },
     {
       "course": "PSY:2810",
       "name": "Research Methods in Psychology",
       "hours": 4,
       "year": "Sophomore",
-      "semester": 1
+      "semester": 1,
+      "credit": "Psychology Minor"
     },
     {
       "course": "CS:2620",
       "name": "Networking for Informatics",
       "hours": 3,
       "year": "Sophomore",
-      "semester": 2
+      "semester": 2,
+      "credit": "Informatics Major"
     },
     {
       "course": "CS:4980-1",
       "name": "Information Visualization",
       "hours": 3,
       "year": "Sophomore",
-      "semester": 2
+      "semester": 2,
+      "credit": "Informatics Major"
     },
     {
       "course": "IE:3450",
       "name": "Ergonomics",
       "hours": 3,
       "year": "Sophomore",
-      "semester": 2
+      "semester": 2,
+      "credit": "Informatics Major"
     },
     {
       "course": "PSY:2401",
       "name": "Developmental Science",
       "hours": 3,
       "year": "Sophomore",
-      "semester": 2
+      "semester": 2,
+      "credit": "Psychology Minor"
     },
     {
       "course": "CS:2210",
       "name": "Discrete Structures",
       "hours": 3,
       "year": "Junior",
-      "semester": 1
+      "semester": 1,
+      "credit": "Comp Sci Minor"
     },
     {
       "course": "CS:2520",
       "name": "Human-Computer Interaction",
       "hours": 3,
       "year": "Junior",
-      "semester": 1
+      "semester": 1,
+      "credit": "Informatics Major"
     },
     {
       "course": "MATH:1850-2",
       "name": "Calculus",
       "hours": 4,
       "year": "Junior",
-      "semester": 1
+      "semester": 1,
+      "credit": "Elective"
     },
     {
       "course": "MSCI:3200",
       "name": "Database Management",
       "hours": 3,
       "year": "Junior",
-      "semester": 1
+      "semester": 1,
+      "credit": "Informatics Major"
     },
     {
       "course": "PSY:2501",
       "name": "Intro to Social Psychology",
       "hours": 3,
       "year": "Junior",
-      "semester": 1
+      "semester": 1,
+      "credit": "Psychology Minor"
     },
     {
       "course": "ANTH:1161",
       "name": "Origins of Life in the Universe",
       "hours": 4,
       "year": "Junior",
-      "semester": 2
+      "semester": 2,
+      "credit": "Elective"
     },
     {
       "course": "CS:2230",
       "name": "Data Structures",
       "hours": 4,
       "year": "Junior",
-      "semester": 2
+      "semester": 2,
+      "credit": "Comp Sci Minor"
     },
     {
       "course": "CS:4500",
       "name": "Research Methods in HCI",
       "hours": 3,
       "year": "Junior",
-      "semester": 2
+      "semester": 2,
+      "credit": "Informatics Major"
     },
     {
       "course": "PHIL:1033",
       "name": "The Meaning of Life",
       "hours": 3,
       "year": "Junior",
-      "semester": 2
+      "semester": 2,
+      "credit": "Elective"
     },
     {
       "course": "CS:3330",
       "name": "Algorithms",
       "hours": 3,
       "year": "Senior",
-      "semester": 1
+      "semester": 1,
+      "credit": "Comp Sci Minor"
     },
     {
       "course": "CS:3910",
       "name": "Informatics Project",
       "hours": 3,
       "year": "Senior",
-      "semester": 1
+      "semester": 1,
+      "credit": "Informatics Major"
     },
     {
       "course": "CS:4480",
       "name": "Knowledge Discovery",
       "hours": 3,
       "year": "Senior",
-      "semester": 1
+      "semester": 1,
+      "credit": "Comp Sci Minor"
     },
     {
       "course": "CS:4980-2",
       "name": "Network Security and Privacy",
       "hours": 3,
       "year": "Senior",
-      "semester": 1
+      "semester": 1,
+      "credit": "Informatics Major"
     },
     {
       "course": "PHIL:2542",
       "name": "Minds and Brains",
       "hours": 3,
       "year": "Senior",
-      "semester": 1
+      "semester": 1,
+      "credit": "Elective"
     },
     {
       "course": "CS:4420",
       "name": "Artificial Intelligence",
       "hours": 3,
       "year": "Senior",
-      "semester": 2
+      "semester": 2,
+      "credit": "Comp Sci Minor"
     },
     {
       "course": "GEOG:1050",
       "name": "Foundations of GIS",
       "hours": 3,
       "year": "Senior",
-      "semester": 2
+      "semester": 2,
+      "credit": "Elective"
     },
     {
       "course": "GEOG:3540",
       "name": "Geographic Visualization",
       "hours": 3,
       "year": "Senior",
-      "semester": 2
+      "semester": 2,
+      "credit": "Elective"
     },
     {
       "course": "PHIL:1401",
       "name": "Matters of Life and Death",
       "hours": 3,
       "year": "Senior",
-      "semester": 2
+      "semester": 2,
+      "credit": "Elective"
     }
   ],
   "links": [
