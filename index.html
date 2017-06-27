@@ -21,7 +21,7 @@ var svg = d3.select("body").append("svg")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 var x_0 = d3.scaleBand()
-        .domain([1, 2, 3, 4])
+        .domain(['Freshman', 'Sophomore', 'Junior', 'Senior'])
         .paddingInner(0.4)
         .rangeRound([0, width]),
     x_1 = d3.scaleBand()
