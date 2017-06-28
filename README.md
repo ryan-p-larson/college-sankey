@@ -9,7 +9,8 @@ A Sankey diagram of my college courses, using my classes as nodes and class prer
 
 - [x] Layout classes by specified X, Y positioning.
 - [x] Color Classes by credits.
-- [ ] Move X axis ticks rightward for more natural labeling.
+- [x] Move X axis ticks rightward for more natural labeling.
 - [ ] Adjust Node X height via force simulation/bounding box to prevent overlaps.
-- [ ] Adjust labels so there's less overlap.
+  * Courses changed by hand, including Intro to Comp Sci, Survey of Film, and HCI.
+- [x] Adjust labels so there's less overlap.
 - [ ] Node alignment, general neatness, etc.
