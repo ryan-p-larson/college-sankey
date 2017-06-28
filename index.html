@@ -9,6 +9,12 @@
   body {
     font-family: Arial, sans-serif;
   }
+  .node, .link {
+    stroke: #333;
+  }
+  .link:hover {
+    stroke-opacity: .5 !important;
+  }
   .axis--x path {
     display: none;
   }
@@ -27,7 +33,7 @@
   <h1>College Curriculum Diagram</h1>
 </body>
 <script>
-var margin = {top: 15, right: 100, bottom: 25, left: 150};
+var margin = {top: 15, right: 100, bottom: 35, left: 150};
 var width = 1500 - margin.left - margin.right,
     height = 600 - margin.top - margin.bottom;
 var svg = d3.select("body").append("svg")
@@ -60,7 +66,7 @@ var sankey = d3.sankey()
     .nodeId(function(d) { return d.course; })
     .nodeWidth(15)
     .nodePadding(15)
-    .iterations(128)
+    .iterations(32)
     .size([width, height]);
 
 var link = svg.append("g")
@@ -118,20 +124,21 @@ d3.json("data/courses.json", function(error, courses) {
     .data(courses.links)
     .enter().append("path")
       .attr("class", "link")
+      .attr("id", function(d,i){ d.id = i; return "link-"+i; })
       .attr("d", d3.sankeyLinkHorizontal())
       .attr("stroke-opacity", 0.15)
       .attr("stroke-width", function(d) { return Math.max(1, d.width); });
   node = node
      .data(courses.nodes.sort(function(a, b) {return b.targetLinks.length - a.targetLinks.length; }))
-     .enter().append("g");
+     .enter().append("g")
+     .on("click", highlight_node_links);
    node.append("rect")
       .attr("class", "node")
       .attr("x", function(d) { return d.x0; })
       .attr("y", function(d) { return d.y0; })
       .attr("height", function(d) { return d.height; })
       .attr("width", function(d) { return d.x1 - d.x0; })
-      .attr("fill", function(d) { return colorCredits(d.credit); })
-      .attr("stroke", "#333");
+      .attr("fill", function(d) { return colorCredits(d.credit); });
    node.append("text")
       .attr("class", "classLabel")
       .attr("x", function(d) { return d.x0 - 6; })
@@ -147,13 +154,15 @@ d3.json("data/courses.json", function(error, courses) {
   var marks = svg.append("g").attr("class", "marks");
   marks.append("g")
     .attr("class", "axis axis--x")
-    .attr("transform", "translate("+ -(margin.left*0.75) +","+ (height + margin.bottom*0.25) + ")")
+    .attr("transform", "translate("+ -(margin.left*0.75) +","+ (height + margin.bottom*0.5) + ")")
     .call(d3.axisBottom(x_0));
   // Adjust ticks to be better centered
   d3.select(".axis--x").selectAll(".tick")
       .attr("transform", function(d) {
         return "translate(" + (margin.left + x_0(d) + x_1.bandwidth() + x_1.paddingInner()/2) + ",0)";
       });
+  // Add context to X
+  d3.select('.axis--x').select('.tick text').text('Freshman Year');
   marks.append("g")
     .attr("class", "axis axis--y")
     .attr("transform", "translate("+ -(margin.left*0.75) +",0)")
@@ -183,6 +192,7 @@ d3.json("data/courses.json", function(error, courses) {
       return "translate(0," + ((i * 22) + 20) + ")";
     });
   legend.append("rect")
+      .attr('class', 'node')
       .attr("x", 0)
       .attr("width", 19)
       .attr("height", 19)
@@ -193,7 +203,7 @@ d3.json("data/courses.json", function(error, courses) {
       .attr("dy", "0.32em")
       .text(function(d) { return d; });
 
-  console.log(courses.nodes);
+  //console.log(courses.nodes);
 });
 
 function get_course_x(course) {
@@ -201,4 +211,49 @@ function get_course_x(course) {
       semester = course.semester;
   return x_0(year) + x_1(semester);
 }
+
+function highlight_node_links(node,i){
+
+    var remainingNodes=[],
+        nextNodes=[];
+
+    var stroke_opacity = 0;
+    if( d3.select(this).attr("data-clicked") == "1" ){
+      d3.select(this).attr("data-clicked","0");
+      stroke_opacity = 0.2;
+    }else{
+      d3.select(this).attr("data-clicked","1");
+      stroke_opacity = 0.5;
+    }
+
+    var traverse = [{
+                      linkType : "sourceLinks",
+                      nodeType : "target"
+                    },{
+                      linkType : "targetLinks",
+                      nodeType : "source"
+                    }];
+
+    traverse.forEach(function(step){
+      node[step.linkType].forEach(function(link) {
+        remainingNodes.push(link[step.nodeType]);
+        highlight_link(link.id, stroke_opacity);
+      });
+
+      while (remainingNodes.length) {
+        nextNodes = [];
+        remainingNodes.forEach(function(node) {
+          node[step.linkType].forEach(function(link) {
+            nextNodes.push(link[step.nodeType]);
+            highlight_link(link.id, stroke_opacity);
+          });
+        });
+        remainingNodes = nextNodes;
+      }
+    });
+  }
+
+function highlight_link(id,opacity){
+      d3.select("#link-"+id).style("stroke-opacity", opacity);
+  }
 </script>
