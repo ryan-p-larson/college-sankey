@@ -66,10 +66,18 @@
     },
     {
       "course": "CS:2110",
-      "name": "Programming for Informatics",
+      "name": "Intro to Informatics",
       "hours": 3,
       "year": "Freshman",
       "semester": 2,
+      "credit": "Informatics Major"
+    },
+    {
+      "course": "CS:3110",
+      "name": "Programming for Informatics",
+      "hours": 3,
+      "year": "Sophomore",
+      "semester": 1,
       "credit": "Informatics Major"
     },
     {
@@ -280,6 +288,11 @@
       "value": 1
     },
     {
+      "source": "CS:2110",
+      "target": "CS:3110",
+      "value": 1
+    },
+    {
       "source": "PSY:1001",
       "target": "PSY:2810",
       "value": 1
@@ -290,12 +303,12 @@
       "value": 1
     },
     {
-      "source": "CS:2110",
+      "source": "CS:3110",
       "target": "CS:2620",
       "value": 1
     },
     {
-      "source": "CS:2110",
+      "source": "CS:3110",
       "target": "CS:4980-1",
       "value": 1
     },
@@ -310,7 +323,7 @@
       "value": 1
     },
     {
-      "source": "CS:2110",
+      "source": "CS:3110",
       "target": "CS:2820",
       "value": 1
     },
@@ -320,7 +333,7 @@
       "value": 1
     },
     {
-      "source": "CS:2110",
+      "source": "CS:3110",
       "target": "MSCI:3200",
       "value": 1
     },
@@ -350,7 +363,7 @@
       "value": 1
     },
     {
-      "source": "CS:2110",
+      "source": "CS:3110",
       "target": "CS:3910",
       "value": 1
     },
@@ -365,7 +378,7 @@
       "value": 1
     },
     {
-      "source": "CS:2110",
+      "source": "CS:3110",
       "target": "CS:4980-2",
       "value": 1
     },
