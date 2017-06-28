@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="https://unpkg.com/d3-sankey@0.7"></script>
-<script src="https://unpkg.com/d3-textwrap"></script>
 <script src="https://unpkg.com/d3-jetpack"></script>
-
 
 <style>
   body {
@@ -85,16 +83,13 @@ var node = svg.append("g")
 d3.json("data/courses.json", function(error, courses) {
   if (error) throw error;
 
-  // Prep: Filter and create sankey
+  // Prep: Format and create sankey
+  courses.nodes.forEach(format_course);
   sankey(courses);
 
   // Data preparation: X axis
   x_1.rangeRound([0, x_0.bandwidth()]);
   courses.nodes.forEach(function(d) {
-    var split = d.course.split(":");
-    d.subject = split[0];
-    d.courseNum = +split[1].slice(0, 4);
-
     d.x0 = get_course_x(d);
     d.x1 = d.x0 + x_1.bandwidth();
     return d;
@@ -205,6 +200,18 @@ d3.json("data/courses.json", function(error, courses) {
 
   //console.log(courses.nodes);
 });
+
+function format_course(d) {
+  var split = d.course.split(":");
+  d.subject = split[0];
+  d.courseNum = +split[1].slice(0, 4);
+
+  // Assign Y position here, instead of altering course numbers
+  // TO BE FINISHED
+
+  return d;
+}
+
 
 function get_course_x(course) {
   var year = course.year,
