@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="https://unpkg.com/d3-sankey@0.7"></script>
+<script src="https://unpkg.com/d3-textwrap"></script>
+<script src="https://unpkg.com/d3-jetpack"></script>
 
 
 <style>
+  body {
+    font-family: Arial, sans-serif;
+  }
   .axis--x path {
     display: none;
   }
@@ -11,7 +16,6 @@
     font-weight: bold;
   }
   .chartLabel {
-    font-family: Arial, sans-serif;
     font-weight: bold;
     font-size: 12px;
     fill: #333;
@@ -19,7 +23,9 @@
   }
 </style>
 
-<body></body>
+<body>
+  <h1>College Curriculum Diagram</h1>
+</body>
 <script>
 var margin = {top: 15, right: 100, bottom: 25, left: 150};
 var width = 1500 - margin.left - margin.right,
@@ -30,29 +36,25 @@ var svg = d3.select("body").append("svg")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-svg.append('rect')
-    .attr('class', 'background')
-    .attr('x', -margin.left)
-    .attr('y', -margin.top)
-    .attr('width', width + margin.left + margin.right)
-    .attr('height', height + margin.top + margin.bottom)
-    .style('fill', '#fff');
+svg.append("rect")
+    .attr("class", "background")
+    .attr("x", -margin.left)
+    .attr("y", -margin.top)
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .style("fill", "#fff");
 
 var x_0 = d3.scaleBand()
-        .domain(['Freshman', 'Sophomore', 'Junior', 'Senior'])
+        .domain(["Freshman", "Sophomore", "Junior", "Senior"])
         .paddingInner(0.4)
         .rangeRound([0, width]),
     x_1 = d3.scaleBand()
         .domain([1, 2])
         .padding(0.3),
-    y = d3.scaleBand()
-        .domain(["CS", "PSY", "MSCI", "PHIL", "IE", "GEOG", "STAT", "CINE", "MATH", "ANTH", "RELS"])
-        .range([0, height]),
-    y_1 = d3.scaleLinear().rangeRound([height, 0]),
-    color = d3.scaleOrdinal(d3.schemeCategory10),
+    y = d3.scaleLinear().rangeRound([height, 0]),
     colorCredits = d3.scaleOrdinal()
       .domain(["Elective", "Psychology Minor", "Comp Sci Minor", "Informatics Major"])
-      .range(['#a6cee3','#1f78b4','#b2df8a','#33a02c']);
+      .range(["#a6cee3", "#1f78b4", "#b2df8a", "#33a02c"]);
 
 var sankey = d3.sankey()
     .nodeId(function(d) { return d.course; })
@@ -74,13 +76,11 @@ var node = svg.append("g")
     .attr("font-size", 10)
   .selectAll("g");
 
-
 d3.json("data/courses.json", function(error, courses) {
   if (error) throw error;
 
   // Prep: Filter and create sankey
   sankey(courses);
-  //courses.nodes = courses.nodes.filter(function(d) { return d.value > 0; });
 
   // Data preparation: X axis
   x_1.rangeRound([0, x_0.bandwidth()]);
@@ -93,13 +93,12 @@ d3.json("data/courses.json", function(error, courses) {
     d.x1 = d.x0 + x_1.bandwidth();
     return d;
   });
-  var subjects = d3.set(courses.nodes.map(function(d) { return d.subject; }));
 
   // Data prep: Y axis
-  y_1.domain(d3.extent(courses.nodes.map(function(d) { return d.courseNum; })));
+  y.domain(d3.extent(courses.nodes.map(function(d) { return d.courseNum; })));
   courses.nodes.forEach(function(d) {
     var nodeHight = d.y1 - d.y0;
-    d.y1 = y_1(d.courseNum);
+    d.y1 = y(d.courseNum);
     d.y0 = d.y1 - nodeHight;
 
     // Make sure lower nodes don't get crowded out
@@ -107,6 +106,8 @@ d3.json("data/courses.json", function(error, courses) {
       d.y0 = 0;
       d.y1 = nodeHight;
     }
+    // Add node height, nodes without links need explicit setting
+    d.height = (d.y1-d.y0 > 1) ? d.y1-d.y0 : 15.333333333333371;
 
     return d;
   });
@@ -116,68 +117,70 @@ d3.json("data/courses.json", function(error, courses) {
   link = link
     .data(courses.links)
     .enter().append("path")
-      .attr('class', 'link')
+      .attr("class", "link")
       .attr("d", d3.sankeyLinkHorizontal())
+      .attr("stroke-opacity", 0.15)
       .attr("stroke-width", function(d) { return Math.max(1, d.width); });
   node = node
      .data(courses.nodes.sort(function(a, b) {return b.targetLinks.length - a.targetLinks.length; }))
      .enter().append("g");
    node.append("rect")
-      .attr('class', 'node')
+      .attr("class", "node")
       .attr("x", function(d) { return d.x0; })
       .attr("y", function(d) { return d.y0; })
-      .attr("height", function(d) { return (d.y1 - d.y0) > 1 ? d.y1 - d.y0 : 10; })
+      .attr("height", function(d) { return d.height; })
       .attr("width", function(d) { return d.x1 - d.x0; })
-      //.attr("fill", function(d) { return color(d.name.replace(/ .*/, "")); })
-      .attr('fill', function(d) { return colorCredits(d.credit); })
-      .attr("stroke", "#000");
+      .attr("fill", function(d) { return colorCredits(d.credit); })
+      .attr("stroke", "#333");
    node.append("text")
-      .attr('class', 'classLabel')
+      .attr("class", "classLabel")
       .attr("x", function(d) { return d.x0 - 6; })
-      .attr("y", function(d) { return (d.y1 + d.y0) / 2; })
+      .attr("y", function(d) { return d.y0 + d.height / 2; })
       .attr("dy", "0.35em")
       .attr("text-anchor", "end")
       .text(function(d) { return d.name; })
-    //.filter(function(d) { return d.x0 < width / 2; })
     .filter(function(d) { return d.semester === 2; })
       .attr("x", function(d) { return d.x1 + 6; })
       .attr("text-anchor", "start");
 
   // MARKINGS
-  var marks = svg.append('g').attr('class', 'marks');
-  marks.append('g')
-    .attr('class', 'axis axis--x')
-    .attr('transform', 'translate('+ -(margin.left*0.75) +','+ (height + margin.bottom*0.25) + ')')
+  var marks = svg.append("g").attr("class", "marks");
+  marks.append("g")
+    .attr("class", "axis axis--x")
+    .attr("transform", "translate("+ -(margin.left*0.75) +","+ (height + margin.bottom*0.25) + ")")
     .call(d3.axisBottom(x_0));
-  marks.append('g')
-    .attr('class', 'axis axis--y')
-    //.attr('transform', 'translate(0,' + (height + margin.bottom*.75) + ')')
-    .call(d3.axisLeft(y_1))
+  // Adjust ticks to be better centered
+  d3.select(".axis--x").selectAll(".tick")
+      .attr("transform", function(d) {
+        return "translate(" + (margin.left + x_0(d) + x_1.bandwidth() + x_1.paddingInner()/2) + ",0)";
+      });
+  marks.append("g")
+    .attr("class", "axis axis--y")
+    .attr("transform", "translate("+ -(margin.left*0.75) +",0)")
+    .call(d3.axisLeft(y).tickFormat(d3.format("d")))
     .append("text")
-      .attr('class', 'chartLabel')
-      .attr('x', 5)
-      .attr("y", 5)
+      .attr("class", "chartLabel")
+      .attr("x", 5)
+      .attr("y", 0)
       .attr("dy", "0.71em")
       .text("Course Number");
 
   // Legend Title
-  marks.append('text')
-      .attr('class', 'chartLabel')
-      .attr('x', -(margin.left * 0.97))
-      .attr('y', 5)
+  marks.append("text")
+      .attr("class", "chartLabel")
+      .attr("x", 0)
+      .attr("y", 0)
       .attr("dy", "0.71em")
-      .text('Course Credit')
+      .text("Course Credit")
   var legend = marks.append("g")
     .attr("font-family", "sans-serif")
-    .attr("font-size", 10)
+    .attr("font-size", 11)
     .attr("text-anchor", "start")
     .selectAll("g")
     .data(colorCredits.domain().reverse())
     .enter().append("g")
     .attr("transform", function(d, i) {
-      return "translate(" +
-      -(margin.left * 0.97) +"," +
-      ((i * 22) + 20) + ")";
+      return "translate(0," + ((i * 22) + 20) + ")";
     });
   legend.append("rect")
       .attr("x", 0)
@@ -190,6 +193,7 @@ d3.json("data/courses.json", function(error, courses) {
       .attr("dy", "0.32em")
       .text(function(d) { return d; });
 
+  console.log(courses.nodes);
 });
 
 function get_course_x(course) {
