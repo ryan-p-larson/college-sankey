@@ -201,15 +201,20 @@ function format_course(d) {
   var split = d.course.split(":");
   d.subject = split[0];
   d.courseNum = +split[1].slice(0, 4);
+
   // Assign Y position here, instead of altering course numbers
-  // TO BE FINISHED
   var reposition = {
-    1161: 1261, // Origins of Life
-    1033: 1103, // Meaning of Life
-    2210: 2180  // Discrete Structures
+    "PHIL:1033":  1010,
+    "ANTH:1061":  1225,
+    "CINE:1260":  1080,
+    "ANTH:1301":  1475,
+    "MATH:1020":  1250,
+    "STAT:1030":  1400,
+    "CS:2210":    2180,
+    "CS:2520":    2820
   }
-  if (reposition.hasOwnProperty(d.courseNum)) {
-    d.yPos = reposition[d.courseNum];
+  if (reposition.hasOwnProperty(d.course)) {
+    d.yPos = reposition[d.course];
   } else {
     d.yPos = d.courseNum;
   }

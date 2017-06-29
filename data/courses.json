@@ -1,7 +1,7 @@
 {
   "nodes": [
     {
-      "course": "CINE:1080",
+      "course": "CINE:1260",
       "name": "Survey of Film",
       "hours": 3,
       "year": "Freshman",
@@ -25,7 +25,7 @@
       "credit": "Psychology Minor"
     },
     {
-      "course": "ANTH:1460",
+      "course": "ANTH:1301",
       "name": "Human Origins",
       "hours": 3,
       "year": "Freshman",
@@ -49,7 +49,7 @@
       "credit": "Elective"
     },
     {
-      "course": "STAT:1400",
+      "course": "STAT:1030",
       "name": "Statistics for Business",
       "hours": 4,
       "year": "Freshman",
@@ -89,7 +89,7 @@
       "credit": "Elective"
     },
     {
-      "course": "MATH:1200",
+      "course": "MATH:1020",
       "name": "Elementary Functions",
       "hours": 4,
       "year": "Sophomore",
@@ -145,7 +145,7 @@
       "credit": "Comp Sci Minor"
     },
     {
-      "course": "CS:2820",
+      "course": "CS:2520",
       "name": "Human-Computer Interaction",
       "hours": 3,
       "year": "Junior",
@@ -177,7 +177,7 @@
       "credit": "Psychology Minor"
     },
     {
-      "course": "ANTH:1161",
+      "course": "ANTH:1061",
       "name": "Origins of Life in the Universe",
       "hours": 4,
       "year": "Junior",
@@ -298,7 +298,7 @@
       "value": 1
     },
     {
-      "source": "STAT:1400",
+      "source": "STAT:1030",
       "target": "PSY:2810",
       "value": 1
     },
@@ -324,11 +324,11 @@
     },
     {
       "source": "CS:3110",
-      "target": "CS:2820",
+      "target": "CS:2520",
       "value": 1
     },
     {
-      "source": "MATH:1200",
+      "source": "MATH:1020",
       "target": "MATH:1850-2",
       "value": 1
     },
@@ -348,7 +348,7 @@
       "value": 1
     },
     {
-      "source": "CS:2820",
+      "source": "CS:2520",
       "target": "CS:4500",
       "value": 1
     },
@@ -368,7 +368,7 @@
       "value": 1
     },
     {
-      "source": "CS:2820",
+      "source": "CS:2520",
       "target": "CS:3910",
       "value": 1
     },
