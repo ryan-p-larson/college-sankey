@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://unpkg.com/d3-sankey@0.7"></script>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+  }
+  .node, .link, .legendCell {
+    stroke: #333;
+  }
+  .link:hover {
+    stroke-opacity: .5 !important;
+  }
+  .axis--x path {
+    display: none;
+  }
+  .axis {
+    font-weight: bold;
+  }
+  .chartLabel {
+    font-weight: bold;
+    font-size: 12px;
+    fill: #333;
+    text-anchor: start;
+  }
+</style>
+
+<body>
+  <h1>College Curriculum Diagram</h1>
+</body>
+<script>
+
+var margin = {top: 10, right: 10, bottom: 30, left: 40};
+var width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+var marks = svg.append("g").attr("class", "marks");
+
+var x_0 = d3.scaleBand()
+        .domain(["Freshman", "Sophomore", "Junior", "Senior"])
+        .paddingOuter(0.25) // 0.4
+        .paddingInner(0.4)  // 0.4
+        .rangeRound([0, width]),
+    x_1 = d3.scaleBand()
+        .domain([1, 2])
+        .paddingOuter(0.7)  // 0.3
+        .paddingInner(0.5),
+    y = d3.scaleLinear().rangeRound([height, 0]),
+    colorCredits = d3.scaleOrdinal()
+      .domain(["Elective", "Psychology Minor", "Comp Sci Minor", "Informatics Major"])
+      .range(["#a6cee3", "#1f78b4", "#b2df8a", "#33a02c"]);
+
+var sankey = d3.sankey()
+    .nodeId(function(d) { return d.course; })
+    .nodeWidth(15)
+    .nodePadding(15)
+    .iterations(32)
+    .size([width, height]);
+var link = svg.append("g")
+    .attr("class", "links")
+    .attr("fill", "none")
+    .attr("stroke", "#000")
+    .attr("stroke-opacity", 0.2)
+  .selectAll("path");
+var node = svg.append("g")
+    .attr("class", "nodes")
+    .attr("font-family", "sans-serif")
+    .attr("font-size", 10)
+  .selectAll("g");
+
+d3.json("data/courses.json", function(error, courses) {
+  if (error) throw error;
+
+  // Prep: Format and create sankey
+  courses.nodes.forEach(format_course);
+  sankey(courses);
+
+  // Data preparation: X axis
+  x_1.rangeRound([0, x_0.bandwidth()]);
+  courses.nodes.forEach(function(d) {
+    d.x0 = get_course_x(d);
+    d.x1 = d.x0 + x_1.bandwidth();
+    return d;
+  });
+
+  // Data prep: Y axis
+  y.domain([1000, 5000]);
+  courses.nodes.forEach(function(d) {
+    var singleNodeHeight = 8.66667;
+    var nodeHight = d.y1 - d.y0;
+    d.y1 = y(d.yPos);
+    d.y0 = d.y1 - nodeHight;
+    // Make sure higher nodes don't get crowded out
+    if (d.y0 < 0) {
+      d.y0 = 0;
+      d.y1 = nodeHight;
+    }
+    // Add node height, nodes without links need explicit setting
+    d.height = (d.y1-d.y0 > 1) ? d.y1-d.y0 : singleNodeHeight;
+    return d;
+  });
+
+  // DRAW
+  sankey.update(courses);
+  link = link
+    .data(courses.links)
+    .enter().append("path")
+      .attr("class", "link")
+      .attr("id", function(d,i){ d.id = i; return "link-"+i; })
+      .attr("d", d3.sankeyLinkHorizontal())
+      .attr("stroke-opacity", 0.15)
+      .attr("stroke-width", function(d) { return Math.max(1, d.width); });
+  node = node
+     .data(courses.nodes)
+     .enter().append("g")
+     .attr("class", function(d) { return d.credit.split(" ")[0]; })
+     .on("click", highlight_node_links);
+   node.append("rect")
+      .attr("class", "node")
+      .attr("x", function(d) { return d.x0; })
+      .attr("y", function(d) { return d.y0; })
+      .attr("height", function(d) { return d.height; })
+      .attr("width", function(d) { return d.x1 - d.x0; })
+      .attr("fill", function(d) { return colorCredits(d.credit); });
+   node.append("text")
+      .attr("class", "classLabel")
+      .attr("x", function(d) { return d.x0 - 6; })
+      .attr("y", function(d) { return d.y0 + d.height / 2; })
+      .attr("dy", "0.35em")
+      .attr("text-anchor", "end")
+      .text(function(d) { return d.name; })
+    .filter(function(d) { return d.semester === 2; })
+      .attr("x", function(d) { return d.x1 + 6; })
+      .attr("text-anchor", "start");
+
+  // adjust labels
+  d3.selectAll('.classLabel').call(wrap, 70);
+
+  // MARKINGS
+  marks.append("g")
+    .attr("class", "axis axis--x")
+    .attr("transform", "translate(0, " + (height + margin.bottom * 0.4) + ")")
+    .call(d3.axisBottom(x_0));
+  // Add context to X
+  d3.select('.axis--x').select('.tick text').text('Freshman Year');
+  marks.append("g")
+    .attr("class", "axis axis--y")
+    .call(d3.axisLeft(y)
+      .tickFormat(d3.format("d"))
+      .ticks(5))
+    .append("text")
+      .attr("class", "chartLabel")
+      .attr("x", -90)
+      .attr('transform', 'rotate(-90)')
+      .attr("y", 5)
+      .attr("dy", "0.71em")
+      .text("Course Number");
+
+  // Legend Title
+  marks.append("text")
+      .attr("class", "chartLabel")
+      .attr("x", function() { return get_course_x({year: 'Freshman', semester: 1}); })
+      .attr("y", 0)
+      .attr("dy", "0.71em")
+      .text("Course Credit")
+  var legend = marks.append("g")
+    .attr("font-family", "sans-serif")
+    .attr("font-size", 11)
+    .attr("text-anchor", "start")
+    .selectAll("g")
+    .data(colorCredits.domain().reverse())
+    .enter().append("g")
+    .attr("transform", function(d, i) {
+      return "translate(" +
+      get_course_x({year: 'Freshman', semester: 1}) + "," +
+      ((i * 22) + 20) + ")";
+    });
+  legend.append("rect")
+      .attr('class', 'legendCell')
+      .attr("x", 0)
+      .attr("width", x_1.bandwidth())
+      .attr("height", 19)
+      .attr("fill", colorCredits)
+      .on("click", highlight_legend);
+  legend.append("text")
+      .attr("x", x_1.bandwidth() + 5)
+      .attr("y", 9.5)
+      .attr("dy", "0.32em")
+      .text(function(d) { return d; });
+
+  //console.log(courses.nodes);
+});
+
+function format_course(d) {
+  var split = d.course.split(":");
+  d.subject = split[0];
+  d.courseNum = +split[1].slice(0, 4);
+  // Assign Y position here, instead of altering course numbers
+  // TO BE FINISHED
+  var reposition = {
+    1161: 1261, // Origins of Life
+    1033: 1103, // Meaning of Life
+    2210: 2180  // Discrete Structures
+  }
+  if (reposition.hasOwnProperty(d.courseNum)) {
+    d.yPos = reposition[d.courseNum];
+  } else {
+    d.yPos = d.courseNum;
+  }
+  return d;
+}
+function get_course_x(course) {
+  var year = course.year,
+      semester = course.semester;
+  return x_0(year) + x_1(semester);
+}
+function highlight_node_links(node,i){
+    var remainingNodes=[],
+        nextNodes=[];
+    var stroke_opacity = 0;
+    if( d3.select(this).attr("data-clicked") == "1" ){
+      d3.select(this).attr("data-clicked","0");
+      stroke_opacity = 0.2;
+    }else{
+      d3.select(this).attr("data-clicked","1");
+      stroke_opacity = 0.5;
+    }
+    var traverse = [{
+                      linkType : "sourceLinks",
+                      nodeType : "target"
+                    },{
+                      linkType : "targetLinks",
+                      nodeType : "source"
+                    }];
+    traverse.forEach(function(step){
+      node[step.linkType].forEach(function(link) {
+        remainingNodes.push(link[step.nodeType]);
+        highlight_link(link.id, stroke_opacity);
+      });
+      while (remainingNodes.length) {
+        nextNodes = [];
+        remainingNodes.forEach(function(node) {
+          node[step.linkType].forEach(function(link) {
+            nextNodes.push(link[step.nodeType]);
+            highlight_link(link.id, stroke_opacity);
+          });
+        });
+        remainingNodes = nextNodes;
+      }
+    });
+  }
+function highlight_link(id,opacity){
+      d3.select("#link-"+id).style("stroke-opacity", opacity);
+  }
+function wrap(text, width) {
+  text.each(function () {
+      var text = d3.select(this),
+          words = text.text().split(/\s+/).reverse(),
+          word,
+          line = [],
+          lineNumber = 0,
+          lineHeight = 1.1, // ems
+          x = text.attr("x"),
+          y = text.attr("y"),
+          //dy = 0, //parseFloat(text.attr("dy")),
+          dy = parseFloat(text.attr("dy")) || 0,
+          tspan = text.text(null)
+                      .append("tspan")
+                      .attr("x", x)
+                      .attr("y", y)
+                      .attr("dy", dy + "em");
+
+      while (word = words.pop()) {
+          line.push(word);
+          tspan.text(line.join(" "));
+          if (tspan.node().getComputedTextLength() > width) {
+              line.pop();
+              tspan.text(line.join(" "));
+              line = [word];
+              tspan = text.append("tspan")
+                          .attr("x", x)
+                          .attr("y", y)
+                          .attr("dy", ++lineNumber * lineHeight + dy + "em")
+                          .text(word);
+          }
+      }
+
+      /* VERTICAL ADJUSTMENT
+        First, get the bounding box for the label
+        Then, calculate the center of the label.
+        Get the difference of label y (also the rectangle) and label
+      */
+      var label_box = text.node().getBBox();
+      var label_center = label_box.y + (label_box.height / 2);
+      var label_dy = y - label_center;
+
+      text.attr("transform", "translate(0, " + label_dy + ")");
+  });
+}
+
+
+function assign_node_class(d) {
+  return 'node ' + d.credit.split(" ")[0];
+}
+function highlight_legend(node) {
+  var credit = "." + node.split(" ")[0];
+  if( d3.select(this).attr("data-clicked") == "1" ){
+    // Legend cells
+    d3.selectAll('.legendCell').style('fill-opacity', 1);
+    d3.select(this).attr("data-clicked","0");
+    d3.selectAll('.node')
+      .style('fill-opacity', 1)
+      .style('fill', function(d) { return colorCredits(d.credit); });
+  } else {
+    // Activate current class
+    d3.selectAll('.legendCell').style('fill-opacity', 0.2);
+    d3.select(this).attr("data-clicked", "1").style('fill-opacity', 1);
+    d3.selectAll('.node').style('fill', '#eee');
+    d3.selectAll(credit + ' rect').style('fill', function(d) { return colorCredits(d.credit); });
+  }
+}
+
+</script>
