@@ -31,9 +31,9 @@
 </body>
 <script>
 
-var margin = {top: 10, right: 10, bottom: 30, left: 40};
-var width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+var margin = {top: 10, right: 10, bottom: 40, left: 40};
+var width = 1200 - margin.left - margin.right,
+    height = 625 - margin.top - margin.bottom;
 var svg = d3.select("body").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
@@ -43,12 +43,12 @@ var marks = svg.append("g").attr("class", "marks");
 
 var x_0 = d3.scaleBand()
         .domain(["Freshman", "Sophomore", "Junior", "Senior"])
-        .paddingOuter(0.25) // 0.4
-        .paddingInner(0.4)  // 0.4
+        .paddingOuter(0.15)
+        .paddingInner(0.4)
         .rangeRound([0, width]),
     x_1 = d3.scaleBand()
         .domain([1, 2])
-        .paddingOuter(0.7)  // 0.3
+        .paddingOuter(0.5)  // 0.3
         .paddingInner(0.5),
     y = d3.scaleLinear().rangeRound([height, 0]),
     colorCredits = d3.scaleOrdinal()
@@ -91,7 +91,7 @@ d3.json("data/courses.json", function(error, courses) {
   // Data prep: Y axis
   y.domain([1000, 5000]);
   courses.nodes.forEach(function(d) {
-    var singleNodeHeight = 8.66667;
+    var singleNodeHeight = 15.3333333485;
     var nodeHight = d.y1 - d.y0;
     d.y1 = y(d.yPos);
     d.y0 = d.y1 - nodeHight;
@@ -100,6 +100,7 @@ d3.json("data/courses.json", function(error, courses) {
       d.y0 = 0;
       d.y1 = nodeHight;
     }
+
     // Add node height, nodes without links need explicit setting
     d.height = (d.y1-d.y0 > 1) ? d.y1-d.y0 : singleNodeHeight;
     return d;
@@ -144,7 +145,7 @@ d3.json("data/courses.json", function(error, courses) {
   // MARKINGS
   marks.append("g")
     .attr("class", "axis axis--x")
-    .attr("transform", "translate(0, " + (height + margin.bottom * 0.4) + ")")
+    .attr("transform", "translate(0, " + (height + margin.bottom * 0.6) + ")")
     .call(d3.axisBottom(x_0));
   // Add context to X
   d3.select('.axis--x').select('.tick text').text('Freshman Year');
