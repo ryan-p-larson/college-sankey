@@ -8,12 +8,9 @@
     font-family: Arial, sans-serif;
   }
   .d3tooltip {
-    /* background: rgba(32, 32, 32, 0.75);
-    color: #f9f9f9;
-    pointer-events: none;*/
-
-    background: #fff;
+    background: rgba(242, 242, 242, 0.85);
     color: #333;
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
 
     padding: 8px;
     max-width: 450px;
@@ -106,7 +103,8 @@ var tooltip = d3.select("body")
     .attr("class", "d3tooltip")
     .style("position", "absolute")
     .style("z-index", "10")
-    .style("visibility", "hidden");
+    .style("visibility", "hidden")
+    .on("click", function() { d3.select(this).style("visibility", "hidden"); });
 
 var sankey = d3.sankey()
     .nodeId(function(d) { return d.course; })
@@ -183,14 +181,15 @@ d3.json("data/courses.json", function(error, courses) {
       .attr("width", function(d) { return d.width; })
       .attr("fill", function(d) { return colorCredits(d.credit); })
       .on("click", show_tooltip);
-  node.append("circle")
-      .filter(function(d) { return d.hasOwnProperty("project"); })
-      .attr("cx", function(d) { return d.x0 + (d.width * 0.2); })
-      .attr("cy", function(d) { return d.y0 + (d.height * 0.5); })
-      .attr("r", 3)
-      .style("fill", '#fff')
-    .filter(function(d) { return d.semester === 2; })
-      .attr("cx", function(d) { return d.x0 + (d.width * 0.8); });
+    node.append("circle")
+        .filter(function(d) { return d.hasOwnProperty("project"); })
+        .attr("cx", function(d) { return d.x0 + (d.width * 0.15); })
+        .attr("cy", function(d) { return d.y0 + (d.height * 0.5); })
+        .attr("r", 3)
+        .style("fill", '#fff')
+        .style("fill-opacity", 0.75)
+      .filter(function(d) { return d.semester === 2; })
+        .attr("cx", function(d) { return d.x0 + (d.width * 0.85); });
    node.append("text")
       .attr("class", "classLabel")
       .attr("x", function(d) { return d.x0 - 6; })
@@ -257,12 +256,25 @@ d3.json("data/courses.json", function(error, courses) {
       .attr("dy", "0.32em")
       .text(function(d) { return d; });
 
-  //console.log(courses.nodes);
 });
 
 function format_course(d) {
+  var expanded_subj = {
+    "CINE": "Cinema",
+    "MATH": "Mathematics",
+    "PSY": "Psychology",
+    "ANTH": "Anthropology",
+    "RELS": "Religious Studies",
+    "STAT": "Statistics",
+    "CS": "Computer Science",
+    "GEOG": "Geography",
+    "IE": "Industrial Engineering",
+    "MSCI": "Management Sciences",
+    "PHIL": "Philosophy"
+  };
+
   var split = d.course.split(":");
-  d.subject = split[0];
+  d.subject = expanded_subj[split[0]];
   d.courseNum = +split[1].slice(0, 4);
 
   // Assign Y position here, instead of altering course numbers
@@ -295,16 +307,19 @@ function highlight_node_links(node,i){
     if( d3.select(this).attr("data-clicked") == "1" ){
       d3.select(this)
         .attr("data-clicked","0")
+        .style('stroke-opacity', null)
         .style('stroke-width', null);
       stroke_opacity = 0.2;
 
       // Hide tooltip
       tooltip.style("visibility", "hidden");
     }else{
+      stroke_opacity = 0.5;
+
       d3.select(this)
       .attr("data-clicked","1")
+      .style('stroke-opacity', 0.75)
       .style('stroke-width', '2px');
-      stroke_opacity = 0.5;
     }
     var traverse = [{
                       linkType : "sourceLinks",
@@ -413,8 +428,6 @@ function highlight_legend(node) {
       .style('fill', function(d) { return colorCredits(d.credit); });
   }
 }
-
-
 function show_tooltip(d) {
   var svg_bbox = svg.node().getBoundingClientRect();
   var origin_x = svg_bbox.left;
