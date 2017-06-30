@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="https://unpkg.com/d3-sankey@0.7"></script>
 
@@ -27,14 +28,33 @@
 </style>
 
 <body>
-  <h1>College Curriculum Diagram</h1>
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <h1>College Curriculum Diagram</h1>
+      <div id="chart"></div>
+    </div>
+  </div>
+</div>
 </body>
 <script>
+// Setable chart variables
+var div_width = parseInt(d3.select('.container').style('width')); console.log(div_width);
 
-var margin = {top: 10, right: 10, bottom: 40, left: 40};
-var width = 1200 - margin.left - margin.right,
-    height = 625 - margin.top - margin.bottom;
-var svg = d3.select("body").append("svg")
+var m_bottom = (div_width > 990) ? 40 : 30;
+var t_width = (div_width > 990) ? 1200 : 960;
+var t_height = (div_width > 990) ? 625 : 500;
+var singleNodeHeight = (div_width > 990) ? 15.333333 : 8.66667;
+var x_axis_down = (div_width > 990) ? 0.6: 0.4;
+var padding_year = (div_width > 990) ? 0.15 : 0.25;
+var padding_semester = (div_width > 990) ? 0.5 : 0.7;
+
+// Begin actual charting.
+
+var margin = {top: 10, right: 10, bottom: m_bottom, left: 40};
+var width = div_width - margin.left - margin.right,
+    height = t_height - margin.top - margin.bottom;
+var svg = d3.select("#chart").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
@@ -43,13 +63,13 @@ var marks = svg.append("g").attr("class", "marks");
 
 var x_0 = d3.scaleBand()
         .domain(["Freshman", "Sophomore", "Junior", "Senior"])
-        .paddingOuter(0.15)
+        .paddingOuter(padding_year)
         .paddingInner(0.4)
         .rangeRound([0, width]),
     x_1 = d3.scaleBand()
         .domain([1, 2])
-        .paddingOuter(0.5)  // 0.3
-        .paddingInner(0.5),
+        .paddingOuter(0.5)
+        .paddingInner(padding_semester),
     y = d3.scaleLinear().rangeRound([height, 0]),
     colorCredits = d3.scaleOrdinal()
       .domain(["Elective", "Psychology Minor", "Comp Sci Minor", "Informatics Major"])
@@ -91,7 +111,6 @@ d3.json("data/courses.json", function(error, courses) {
   // Data prep: Y axis
   y.domain([1000, 5000]);
   courses.nodes.forEach(function(d) {
-    var singleNodeHeight = 15.3333333485;
     var nodeHight = d.y1 - d.y0;
     d.y1 = y(d.yPos);
     d.y0 = d.y1 - nodeHight;
@@ -145,7 +164,7 @@ d3.json("data/courses.json", function(error, courses) {
   // MARKINGS
   marks.append("g")
     .attr("class", "axis axis--x")
-    .attr("transform", "translate(0, " + (height + margin.bottom * 0.6) + ")")
+    .attr("transform", "translate(0, " + (height + margin.bottom * x_axis_down) + ")")
     .call(d3.axisBottom(x_0));
   // Add context to X
   d3.select('.axis--x').select('.tick text').text('Freshman Year');
@@ -230,10 +249,14 @@ function highlight_node_links(node,i){
         nextNodes=[];
     var stroke_opacity = 0;
     if( d3.select(this).attr("data-clicked") == "1" ){
-      d3.select(this).attr("data-clicked","0");
+      d3.select(this)
+        .attr("data-clicked","0")
+        .style('stroke-width', null);
       stroke_opacity = 0.2;
     }else{
-      d3.select(this).attr("data-clicked","1");
+      d3.select(this)
+      .attr("data-clicked","1")
+      .style('stroke-width', '1.5px');
       stroke_opacity = 0.5;
     }
     var traverse = [{
@@ -308,26 +331,39 @@ function wrap(text, width) {
       text.attr("transform", "translate(0, " + label_dy + ")");
   });
 }
-
-
 function assign_node_class(d) {
   return 'node ' + d.credit.split(" ")[0];
 }
 function highlight_legend(node) {
+  // Grab the credit type
   var credit = "." + node.split(" ")[0];
+
+
   if( d3.select(this).attr("data-clicked") == "1" ){
     // Legend cells
-    d3.selectAll('.legendCell').style('fill-opacity', 1);
-    d3.select(this).attr("data-clicked","0");
+    d3.selectAll('.legendCell')
+      .attr("data-clicked","0")
+      .style('stroke-width', null)
+      .style('fill-opacity', 1);
+    // Rectangles
     d3.selectAll('.node')
       .style('fill-opacity', 1)
       .style('fill', function(d) { return colorCredits(d.credit); });
   } else {
-    // Activate current class
-    d3.selectAll('.legendCell').style('fill-opacity', 0.2);
-    d3.select(this).attr("data-clicked", "1").style('fill-opacity', 1);
-    d3.selectAll('.node').style('fill', '#eee');
-    d3.selectAll(credit + ' rect').style('fill', function(d) { return colorCredits(d.credit); });
+    // Legend Cells
+    d3.selectAll('.legendCell')
+      .attr("data-clicked","0")
+      .style('stroke-width', null)
+      .style('fill-opacity', 0.2);
+    d3.select(this)
+      .attr("data-clicked", "1")
+      .style('stroke-width', '1.5px')
+      .style('fill-opacity', 1);
+    // Rectangles
+    d3.selectAll('.node')
+      .style('fill', '#eee');
+    d3.selectAll(credit + ' rect')
+      .style('fill', function(d) { return colorCredits(d.credit); });
   }
 }
 
