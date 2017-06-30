@@ -32,11 +32,19 @@
   <div class="row">
     <div class="col-xs-12">
       <h1>College Curriculum Diagram</h1>
+      <p><strong>Hi!</strong> I'm Ryan, I recently finished my schooling and I learned a lot on the way. I graduated from the University of Iowa with a B.A. in Informatics with a Human-Computer Interaction focus. I also minored in Computer Science and Psychology, because both ends of the spectrum interested me too much to not learn about either.
+      </p>
+    </div>
+
+    <br>
+    
+    <div class="col-xs-12">
       <div id="chart"></div>
     </div>
   </div>
 </div>
 </body>
+
 <script>
 // Setable chart variables
 var div_width = parseInt(d3.select('.container').style('width')); console.log(div_width);
@@ -256,7 +264,7 @@ function highlight_node_links(node,i){
     }else{
       d3.select(this)
       .attr("data-clicked","1")
-      .style('stroke-width', '1.5px');
+      .style('stroke-width', '2px');
       stroke_opacity = 0.5;
     }
     var traverse = [{
@@ -357,7 +365,7 @@ function highlight_legend(node) {
       .style('fill-opacity', 0.2);
     d3.select(this)
       .attr("data-clicked", "1")
-      .style('stroke-width', '1.5px')
+      .style('stroke-width', '2px')
       .style('fill-opacity', 1);
     // Rectangles
     d3.selectAll('.node')
