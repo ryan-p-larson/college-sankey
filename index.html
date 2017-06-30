@@ -7,18 +7,31 @@
   body {
     font-family: Arial, sans-serif;
   }
+  .d3tooltip {
+    background: rgba(32, 32, 32, 0.75);
+    color: #f9f9f9;
+    padding: 8px;
+    position: absolute;
+    display: inline;
+    pointer-events: none;
+    }
+  .d3tooltip h3 {
+    margin: 0px 0px 8px;
+  }
   .node, .link, .legendCell {
     stroke: #333;
   }
   .link:hover {
     stroke-opacity: .5 !important;
   }
+
   .axis--x path {
     display: none;
   }
   .axis {
     font-weight: bold;
   }
+
   .chartLabel {
     font-weight: bold;
     font-size: 12px;
@@ -37,7 +50,7 @@
     </div>
 
     <br>
-    
+
     <div class="col-xs-12">
       <div id="chart"></div>
     </div>
@@ -58,7 +71,6 @@ var padding_year = (div_width > 990) ? 0.15 : 0.25;
 var padding_semester = (div_width > 990) ? 0.5 : 0.7;
 
 // Begin actual charting.
-
 var margin = {top: 10, right: 10, bottom: m_bottom, left: 40};
 var width = div_width - margin.left - margin.right,
     height = t_height - margin.top - margin.bottom;
@@ -68,6 +80,14 @@ var svg = d3.select("#chart").append("svg")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 var marks = svg.append("g").attr("class", "marks");
+
+var tooltip = d3.select("body")
+    .append("div")
+    .attr("class", "d3tooltip")
+    .style("position", "absolute")
+    .style("z-index", "10")
+    .style("visibility", "hidden");
+
 
 var x_0 = d3.scaleBand()
         .domain(["Freshman", "Sophomore", "Junior", "Senior"])
@@ -148,13 +168,15 @@ d3.json("data/courses.json", function(error, courses) {
      .enter().append("g")
      .attr("class", function(d) { return d.credit.split(" ")[0]; })
      .on("click", highlight_node_links);
+
    node.append("rect")
       .attr("class", "node")
       .attr("x", function(d) { return d.x0; })
       .attr("y", function(d) { return d.y0; })
       .attr("height", function(d) { return d.height; })
       .attr("width", function(d) { return d.x1 - d.x0; })
-      .attr("fill", function(d) { return colorCredits(d.credit); });
+      .attr("fill", function(d) { return colorCredits(d.credit); })
+      .on("click", show_tooltip);
    node.append("text")
       .attr("class", "classLabel")
       .attr("x", function(d) { return d.x0 - 6; })
@@ -261,6 +283,9 @@ function highlight_node_links(node,i){
         .attr("data-clicked","0")
         .style('stroke-width', null);
       stroke_opacity = 0.2;
+
+      // Hide tooltip
+      tooltip.style("visibility", "hidden");
     }else{
       d3.select(this)
       .attr("data-clicked","1")
@@ -374,5 +399,38 @@ function highlight_legend(node) {
       .style('fill', function(d) { return colorCredits(d.credit); });
   }
 }
+
+
+function show_tooltip(d) {
+  var svg_bbox = svg.node().getBoundingClientRect();
+  var origin_x = svg_bbox.left;
+  var origin_y = svg_bbox.top;
+
+  var rect_bbox = d3.select(this).node().getBBox();
+  var anchor_x = origin_x + rect_bbox.x + (rect_bbox.width * 0.5);
+  var anchor_y = origin_y + rect_bbox.y + (rect_bbox.height * 0.75);
+
+  // Render the tooltip
+  tooltip.html("");
+  tooltip.style("border", "3px solid " + colorCredits(d.credit));
+  tooltip.append("h3").text(d.name);
+  tooltip.append("div")
+    .html("<p><strong>Subject:</strong> " + d.subject + "</p>");
+    tooltip.append("div")
+      .html("<p><strong>Course Number:</strong> " + d.courseNum + "</p>");
+    tooltip.append("div")
+      .html("<p><strong>Hours:</strong> " + d.hours + "</p>");
+
+  // Move tooltip into position
+  var tool_bbox = tooltip.node().getBoundingClientRect();
+  var tool_dx = anchor_x - (tool_bbox.width / 2);
+  var tool_dy = anchor_y - tool_bbox.height;
+
+  tooltip
+      .style("visibility", "visible")
+      .style("top", tool_dy + "px").style("left", tool_dx + "px");
+}
+
+
 
 </script>
