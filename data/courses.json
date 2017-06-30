@@ -343,6 +343,11 @@
       "value": 1
     },
     {
+      "source": "PSY:2601",
+      "target": "PSY:1001",
+      "value": 1
+    },
+    {
       "source": "CS:2210",
       "target": "CS:2230",
       "value": 1
