@@ -118,7 +118,8 @@
       "hours": 3,
       "year": "Sophomore",
       "semester": 2,
-      "credit": "Informatics Major"
+      "credit": "Informatics Major",
+      "description" : "This course exposes students from all disciplines to the problems and challenges of effectively interpreting and communicating ever-increasing amounts of data.  Information visualization is a research area that focuses on the use of visualization techniques to help people understand and analyze data so that observers and analysts can identify trends, make new discoveries, and quantify relationships and changes.  Towards demystifying data analysis and making it accessible to a broader interdisciplinary audience, this course focuses on the practical application of modern tools and techniques, leading participants from traditional data and information visualization to innovative thinking in terms of visual analytics and digital storytelling. Towards this end, it encourages the development of and experimenting with new approaches and techniques tailored to varying analytic tasks and audiences, informed partly by participants' own experience, data and application interests. To enable course participants to potentially enter the research field of information visualization, graduate students will receive additional programming tasks and reading assignments from the information visualization research literature. The course will follow a lecture/seminar style with discussion of assigned readings, as well as viewing of visualization examples and hands-on experience with a commercial information visualization tool as well as an OpenSource information visualization toolkit."
     },
     {
       "course": "IE:3450",
@@ -150,7 +151,8 @@
       "hours": 3,
       "year": "Junior",
       "semester": 1,
-      "credit": "Informatics Major"
+      "credit": "Informatics Major",
+      "project": "https://github.com/ryan-p-larson/HCI-Project"
     },
     {
       "course": "MATH:1850-2",
@@ -198,7 +200,8 @@
       "hours": 3,
       "year": "Junior",
       "semester": 2,
-      "credit": "Informatics Major"
+      "credit": "Informatics Major",
+      "project": "https://github.com/ryan-p-larson/hci-experiment"
     },
     {
       "course": "PHIL:1033",
@@ -222,7 +225,8 @@
       "hours": 3,
       "year": "Senior",
       "semester": 1,
-      "credit": "Informatics Major"
+      "credit": "Informatics Major",
+      "project": "https://github.com/ryan-p-larson/infor-project"
     },
     {
       "course": "CS:4480",
@@ -238,7 +242,8 @@
       "hours": 3,
       "year": "Senior",
       "semester": 1,
-      "credit": "Informatics Major"
+      "credit": "Informatics Major",
+      "project": "https://github.com/ryan-p-larson/polititweets"
     },
     {
       "course": "PHIL:2542",
@@ -254,7 +259,8 @@
       "hours": 3,
       "year": "Senior",
       "semester": 2,
-      "credit": "Comp Sci Minor"
+      "credit": "Comp Sci Minor",
+      "project": "https://pathawks.github.io/cs4420-project/"
     },
     {
       "course": "GEOG:1050",
@@ -270,7 +276,8 @@
       "hours": 3,
       "year": "Senior",
       "semester": 2,
-      "credit": "Elective"
+      "credit": "Elective",
+      "project": "https://geog3540.github.io/ryan-p-larson/"
     },
     {
       "course": "PHIL:1401",

@@ -8,12 +8,18 @@
     font-family: Arial, sans-serif;
   }
   .d3tooltip {
-    background: rgba(32, 32, 32, 0.75);
+    /* background: rgba(32, 32, 32, 0.75);
     color: #f9f9f9;
+    pointer-events: none;*/
+
+    background: #fff;
+    color: #333;
+
     padding: 8px;
+    max-width: 450px;
+
     position: absolute;
     display: inline;
-    pointer-events: none;
     }
   .d3tooltip h3 {
     margin: 0px 0px 8px;
@@ -60,7 +66,7 @@
 
 <script>
 // Setable chart variables
-var div_width = parseInt(d3.select('.container').style('width')); console.log(div_width);
+var div_width = parseInt(d3.select('.container').style('width'));
 
 var m_bottom = (div_width > 990) ? 40 : 30;
 var t_width = (div_width > 990) ? 1200 : 960;
@@ -81,14 +87,6 @@ var svg = d3.select("#chart").append("svg")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 var marks = svg.append("g").attr("class", "marks");
 
-var tooltip = d3.select("body")
-    .append("div")
-    .attr("class", "d3tooltip")
-    .style("position", "absolute")
-    .style("z-index", "10")
-    .style("visibility", "hidden");
-
-
 var x_0 = d3.scaleBand()
         .domain(["Freshman", "Sophomore", "Junior", "Senior"])
         .paddingOuter(padding_year)
@@ -102,6 +100,13 @@ var x_0 = d3.scaleBand()
     colorCredits = d3.scaleOrdinal()
       .domain(["Elective", "Psychology Minor", "Comp Sci Minor", "Informatics Major"])
       .range(["#a6cee3", "#1f78b4", "#b2df8a", "#33a02c"]);
+
+var tooltip = d3.select("body")
+    .append("div")
+    .attr("class", "d3tooltip")
+    .style("position", "absolute")
+    .style("z-index", "10")
+    .style("visibility", "hidden");
 
 var sankey = d3.sankey()
     .nodeId(function(d) { return d.course; })
@@ -133,6 +138,7 @@ d3.json("data/courses.json", function(error, courses) {
   courses.nodes.forEach(function(d) {
     d.x0 = get_course_x(d);
     d.x1 = d.x0 + x_1.bandwidth();
+    d.width = d.x1 - d.x0;
     return d;
   });
 
@@ -174,9 +180,17 @@ d3.json("data/courses.json", function(error, courses) {
       .attr("x", function(d) { return d.x0; })
       .attr("y", function(d) { return d.y0; })
       .attr("height", function(d) { return d.height; })
-      .attr("width", function(d) { return d.x1 - d.x0; })
+      .attr("width", function(d) { return d.width; })
       .attr("fill", function(d) { return colorCredits(d.credit); })
       .on("click", show_tooltip);
+  node.append("circle")
+      .filter(function(d) { return d.hasOwnProperty("project"); })
+      .attr("cx", function(d) { return d.x0 + (d.width * 0.2); })
+      .attr("cy", function(d) { return d.y0 + (d.height * 0.5); })
+      .attr("r", 3)
+      .style("fill", '#fff')
+    .filter(function(d) { return d.semester === 2; })
+      .attr("cx", function(d) { return d.x0 + (d.width * 0.8); });
    node.append("text")
       .attr("class", "classLabel")
       .attr("x", function(d) { return d.x0 - 6; })
@@ -413,18 +427,36 @@ function show_tooltip(d) {
   // Render the tooltip
   tooltip.html("");
   tooltip.style("border", "3px solid " + colorCredits(d.credit));
-  tooltip.append("h3").text(d.name);
+
+  // ADD TEXT
+  tooltip.append("h3").text(d.name).style("font-weight", "bold");
   tooltip.append("div")
-    .html("<p><strong>Subject:</strong> " + d.subject + "</p>");
+    .html("<strong>Subject:</strong> " + d.subject);
+  tooltip.append("div")
+    .html("<strong>Course Number:</strong> " + d.courseNum);
+  tooltip.append("div")
+    .html("<strong>Hours:</strong> " + d.hours);
+
+  // Conditional project links and description?
+  if (d.hasOwnProperty("project")) {
     tooltip.append("div")
-      .html("<p><strong>Course Number:</strong> " + d.courseNum + "</p>");
+      .html("<strong>Project: </strong><a href='" + d.project + "'>Github</a>");
+  }
+  if (d.hasOwnProperty("description")) {
     tooltip.append("div")
-      .html("<p><strong>Hours:</strong> " + d.hours + "</p>");
+      .html("<strong>Description:</strong> " + d.description);
+  }
 
   // Move tooltip into position
   var tool_bbox = tooltip.node().getBoundingClientRect();
   var tool_dx = anchor_x - (tool_bbox.width / 2);
-  var tool_dy = anchor_y - tool_bbox.height;
+
+  // CONDITIONALLY place tooltip
+  if (rect_bbox.y < (height/2)) {
+    var tool_dy = anchor_y;
+  } else {
+    var tool_dy = anchor_y - tool_bbox.height;
+  }
 
   tooltip
       .style("visibility", "visible")
