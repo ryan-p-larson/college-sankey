@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="https://unpkg.com/d3-sankey@0.7"></script>
 
@@ -6,35 +7,79 @@
   body {
     font-family: Arial, sans-serif;
   }
+  svg {
+    background: #fff;
+    border: 1px solid lightgrey;
+  }
+
   .node, .link, .legendCell {
     stroke: #333;
   }
   .link:hover {
     stroke-opacity: .5 !important;
   }
+  .node {
+    stroke-opacity: 0.75;
+  }
+  .node rect {
+    shape-rendering: crispEdges;
+  }
+
   .axis--x path {
     display: none;
   }
-  .axis {
-    font-weight: bold;
+  .axis--x line {
+    opacity: 0.5;
+    stroke: #333;
+    stroke-dasharray: 2px 3px;
+    stroke-width: 1px;
   }
+  .axis--x {
+    font-weight: normal;
+  }
+  #axis--school path {
+    opacity: 0.5;
+    stroke: #333;
+    stroke-width: 1px;
+  }
+
   .chartLabel {
     font-weight: bold;
     font-size: 12px;
     fill: #333;
     text-anchor: start;
   }
+  .chartTitle {
+    font-weight: bold;
+    font-size: "24px";
+    fill: #333;
+  }
+  .chartSubTitle {
+    font-size: 14px;
+  }
 </style>
 
 <body>
-  <h1>College Curriculum Diagram</h1>
+<div id="chart"></div>
 </body>
-<script>
 
-var margin = {top: 10, right: 10, bottom: 40, left: 40};
-var width = 1200 - margin.left - margin.right,
-    height = 625 - margin.top - margin.bottom;
-var svg = d3.select("body").append("svg")
+<script>
+// Setable chart variables
+var div_width = 1000;
+var singleNodeHeight = 19;
+
+// Begin actual charting.
+var abs_width = 1200, abs_height = 725;
+var margin = {
+              top: (abs_width * 0.125),
+              right: 5,
+              bottom: 25,
+              left: 40
+            };
+
+var width = abs_width - margin.left - margin.right,
+    height = 775 - margin.top - margin.bottom;
+var svg = d3.select("#chart").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
@@ -48,12 +93,13 @@ var x_0 = d3.scaleBand()
         .rangeRound([0, width]),
     x_1 = d3.scaleBand()
         .domain([1, 2])
-        .paddingOuter(0.5)  // 0.3
+        .paddingOuter(0.5)
         .paddingInner(0.5),
     y = d3.scaleLinear().rangeRound([height, 0]),
     colorCredits = d3.scaleOrdinal()
       .domain(["Elective", "Psychology Minor", "Comp Sci Minor", "Informatics Major"])
       .range(["#a6cee3", "#1f78b4", "#b2df8a", "#33a02c"]);
+
 
 var sankey = d3.sankey()
     .nodeId(function(d) { return d.course; })
@@ -85,13 +131,13 @@ d3.json("data/courses.json", function(error, courses) {
   courses.nodes.forEach(function(d) {
     d.x0 = get_course_x(d);
     d.x1 = d.x0 + x_1.bandwidth();
+    d.width = d.x1 - d.x0;
     return d;
   });
 
   // Data prep: Y axis
   y.domain([1000, 5000]);
   courses.nodes.forEach(function(d) {
-    var singleNodeHeight = 15.3333333485;
     var nodeHight = d.y1 - d.y0;
     d.y1 = y(d.yPos);
     d.y0 = d.y1 - nodeHight;
@@ -119,14 +165,14 @@ d3.json("data/courses.json", function(error, courses) {
   node = node
      .data(courses.nodes)
      .enter().append("g")
-     .attr("class", function(d) { return d.credit.split(" ")[0]; })
-     .on("click", highlight_node_links);
+     .attr("class", function(d) { return "course " + d.credit.split(" ")[0]; });
+
    node.append("rect")
       .attr("class", "node")
       .attr("x", function(d) { return d.x0; })
       .attr("y", function(d) { return d.y0; })
       .attr("height", function(d) { return d.height; })
-      .attr("width", function(d) { return d.x1 - d.x0; })
+      .attr("width", function(d) { return d.width; })
       .attr("fill", function(d) { return colorCredits(d.credit); });
    node.append("text")
       .attr("class", "classLabel")
@@ -142,74 +188,38 @@ d3.json("data/courses.json", function(error, courses) {
   // adjust labels
   d3.selectAll('.classLabel').call(wrap, 70);
 
-  // MARKINGS
-  marks.append("g")
-    .attr("class", "axis axis--x")
-    .attr("transform", "translate(0, " + (height + margin.bottom * 0.6) + ")")
-    .call(d3.axisBottom(x_0));
-  // Add context to X
-  d3.select('.axis--x').select('.tick text').text('Freshman Year');
-  marks.append("g")
-    .attr("class", "axis axis--y")
-    .call(d3.axisLeft(y)
-      .tickFormat(d3.format("d"))
-      .ticks(5))
-    .append("text")
-      .attr("class", "chartLabel")
-      .attr("x", -90)
-      .attr('transform', 'rotate(-90)')
-      .attr("y", 5)
-      .attr("dy", "0.71em")
-      .text("Course Number");
-
-  // Legend Title
-  marks.append("text")
-      .attr("class", "chartLabel")
-      .attr("x", function() { return get_course_x({year: 'Freshman', semester: 1}); })
-      .attr("y", 0)
-      .attr("dy", "0.71em")
-      .text("Course Credit")
-  var legend = marks.append("g")
-    .attr("font-family", "sans-serif")
-    .attr("font-size", 11)
-    .attr("text-anchor", "start")
-    .selectAll("g")
-    .data(colorCredits.domain().reverse())
-    .enter().append("g")
-    .attr("transform", function(d, i) {
-      return "translate(" +
-      get_course_x({year: 'Freshman', semester: 1}) + "," +
-      ((i * 22) + 20) + ")";
-    });
-  legend.append("rect")
-      .attr('class', 'legendCell')
-      .attr("x", 0)
-      .attr("width", x_1.bandwidth())
-      .attr("height", 19)
-      .attr("fill", colorCredits)
-      .on("click", highlight_legend);
-  legend.append("text")
-      .attr("x", x_1.bandwidth() + 5)
-      .attr("y", 9.5)
-      .attr("dy", "0.32em")
-      .text(function(d) { return d; });
-
-  //console.log(courses.nodes);
+  draw_marks();
+  //draw_boundaries();
 });
 
 function format_course(d) {
+  var expanded_subj = {
+    "CINE": "Cinema",
+    "MATH": "Mathematics",
+    "PSY": "Psychology",
+    "ANTH": "Anthropology",
+    "RELS": "Religious Studies",
+    "STAT": "Statistics",
+    "CS": "Computer Science",
+    "GEOG": "Geography",
+    "IE": "Industrial Engineering",
+    "MSCI": "Management Sciences",
+    "PHIL": "Philosophy"
+  };
+
   var split = d.course.split(":");
-  d.subject = split[0];
+  d.subject = expanded_subj[split[0]];
   d.courseNum = +split[1].slice(0, 4);
 
   // Assign Y position here, instead of altering course numbers
   var reposition = {
-    "PHIL:1033":  1010,
-    "ANTH:1061":  1225,
+    "PSY:1001": 1000,
+    "PHIL:1033":  1100,
+    "ANTH:1061":  1275,
     "CINE:1260":  1080,
     "ANTH:1301":  1475,
     "MATH:1020":  1250,
-    "STAT:1030":  1400,
+    "STAT:1030":  1425,
     "CS:2210":    2180,
     "CS:2520":    2820
   }
@@ -225,44 +235,6 @@ function get_course_x(course) {
       semester = course.semester;
   return x_0(year) + x_1(semester);
 }
-function highlight_node_links(node,i){
-    var remainingNodes=[],
-        nextNodes=[];
-    var stroke_opacity = 0;
-    if( d3.select(this).attr("data-clicked") == "1" ){
-      d3.select(this).attr("data-clicked","0");
-      stroke_opacity = 0.2;
-    }else{
-      d3.select(this).attr("data-clicked","1");
-      stroke_opacity = 0.5;
-    }
-    var traverse = [{
-                      linkType : "sourceLinks",
-                      nodeType : "target"
-                    },{
-                      linkType : "targetLinks",
-                      nodeType : "source"
-                    }];
-    traverse.forEach(function(step){
-      node[step.linkType].forEach(function(link) {
-        remainingNodes.push(link[step.nodeType]);
-        highlight_link(link.id, stroke_opacity);
-      });
-      while (remainingNodes.length) {
-        nextNodes = [];
-        remainingNodes.forEach(function(node) {
-          node[step.linkType].forEach(function(link) {
-            nextNodes.push(link[step.nodeType]);
-            highlight_link(link.id, stroke_opacity);
-          });
-        });
-        remainingNodes = nextNodes;
-      }
-    });
-  }
-function highlight_link(id,opacity){
-      d3.select("#link-"+id).style("stroke-opacity", opacity);
-  }
 function wrap(text, width) {
   text.each(function () {
       var text = d3.select(this),
@@ -273,7 +245,6 @@ function wrap(text, width) {
           lineHeight = 1.1, // ems
           x = text.attr("x"),
           y = text.attr("y"),
-          //dy = 0, //parseFloat(text.attr("dy")),
           dy = parseFloat(text.attr("dy")) || 0,
           tspan = text.text(null)
                       .append("tspan")
@@ -308,27 +279,194 @@ function wrap(text, width) {
       text.attr("transform", "translate(0, " + label_dy + ")");
   });
 }
-
-
 function assign_node_class(d) {
   return 'node ' + d.credit.split(" ")[0];
 }
-function highlight_legend(node) {
-  var credit = "." + node.split(" ")[0];
-  if( d3.select(this).attr("data-clicked") == "1" ){
-    // Legend cells
-    d3.selectAll('.legendCell').style('fill-opacity', 1);
-    d3.select(this).attr("data-clicked","0");
-    d3.selectAll('.node')
-      .style('fill-opacity', 1)
-      .style('fill', function(d) { return colorCredits(d.credit); });
-  } else {
-    // Activate current class
-    d3.selectAll('.legendCell').style('fill-opacity', 0.2);
-    d3.select(this).attr("data-clicked", "1").style('fill-opacity', 1);
-    d3.selectAll('.node').style('fill', '#eee');
-    d3.selectAll(credit + ' rect').style('fill', function(d) { return colorCredits(d.credit); });
-  }
-}
 
+
+function draw_boundaries() {
+  marks.append('rect')
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("width", width)
+    .attr("height", height)
+    .style("fill", "rgba(0, 0, 0, 0.25)")
+    .style("stroke", "1px");
+
+  }
+function draw_marks() {
+  var semester_format = function(d) {
+    return (d === 1) ? "1st" : "2nd";
+  }
+
+  // X axis
+  var base_y = -margin.top * 0.125;
+  // X context
+  var x_context = marks.append("g")
+    .attr("class", "axis")
+    .attr("id", "axis--school")
+    .attr("transform", "translate(0," + base_y + ")")
+    .style("dominant-baseline", "central")
+    .call(d3.axisTop(x_0)
+      .tickPadding(0)
+      .ticks(0)
+      .tickValues([])
+      .tickSize(0));
+  x_context.append("text")
+        .attr("class", "chartLabel")
+        .attr("x", 6)
+        .attr("y", -5)
+        .attr("dy", "0.32em")
+        .text("Time")
+  // Add arrow marker
+  svg.append("defs").append("marker")
+    .attr("id", "arrowhead")
+    .attr("refX", 5)
+    .attr("refY", 6)
+    .attr("markerWidth", 13)
+    .attr("markerHeight", 12)
+    .attr("orient", "0")
+    .attr("fill", "#333")
+    .append("path")
+    .attr("d", "M2,2 L2,13 L8,7 L2,2");
+  x_context.select("path")
+      .attr("d", "M40,0V0.5.5H1125.5V0")
+      .attr("marker-end", "url(#arrowhead)");
+  var context_bbox = x_context.node().getBBox();
+
+
+  // School years axis
+  marks.append("g")
+    .attr("class", "axis axis--x")
+    .attr("id", "axis--year")
+    .attr("transform", "translate(0, 0)")
+    .call(d3.axisTop(x_0)
+      .tickPadding(-base_y * 2.4)
+      .tickSize(-height));
+  // Add context to year (inline label)
+  d3.select("#axis--year").select(".tick text").text("Freshman Year");
+
+  // Semester axis
+  var semester_axes = marks.append('g')
+      .selectAll("g")
+      .data(x_0.domain())
+      .enter().append("g")
+      .attr("class", "axis axis--x")
+      .attr("id", function(d) { return "axis--" + d; })
+      .attr("transform", function(d) {
+        return "translate(" + x_0(d) + "," + base_y * 1.35 + ")";
+      })
+      .call(d3.axisTop(x_1)
+        .tickFormat(semester_format)
+        .tickPadding(6)
+        .tickSize(0)
+      );
+  // Add context to semester (inline label)
+  d3.select("#axis--Freshman").selectAll(".tick text")
+      //.attr("text-anchor", function(d, i) { return (i < 1) ? "end" : "start"; })
+      .text(function(d) { return d + " Semester"; });
+
+  // Course # (Y) Axis
+  marks.append("g")
+    .attr("class", "axis axis--y")
+    .call(d3.axisLeft(y)
+      .tickFormat(d3.format("d"))
+      .ticks(5))
+    .append("text")
+      .attr("class", "chartLabel")
+      .attr("x", 6)
+      .attr("dy", "0.71em")
+      .text("Course Number");
+
+  var text_marks = marks.append("g").attr("class", "textual");
+
+  // Title
+  var title = text_marks.append("text")
+      .attr("class", "chartTitle")
+      .attr("x", 0)
+      .attr("y", -margin.top + 20)
+      .attr("dy", "0.35em")
+      .text("My College Courses and the Prerequisite Relationships Between Them.");
+  var title_bbox = title.node().getBBox();
+
+  var sub_html = "Each rectangle is a class I took, positioned in the semester I took it. The links between classes show the requirements and progression to take higher level classes."
+  var subtitle = text_marks.append("text")
+      .attr("class", "chartSubTitle")
+      .attr("x", 0)
+      .attr("y", -margin.top + 25 + title_bbox.height)
+      .attr("dy", "0.35em")
+      .text(sub_html);
+  subtitle.call(wrap, 700);
+
+  // Move subtitle to 5 pixels below the title
+  var subtitle_bbox = subtitle.node().getBBox();
+  subtitle.selectAll('tspan').attr("y", title_bbox.y + title_bbox.height + subtitle_bbox.height - 10);
+
+  // Margin Legend
+  var legend_x = get_course_x({year: 'Senior', semester: 1}),
+      //legend_y = -margin.top * 0.9,
+      //legend_y = title_bbox.y + title_bbox.height,
+      legend_y = -margin.top + 20,
+      legend_opac = 1;
+  marks.append("text")
+      //.attr("class", "chartLabel")
+      .attr("x", legend_x)
+      .attr("y", legend_y)
+      .attr("dy", "0.35em")
+      .attr("font-family", "Arial")
+      .attr("font-weight", "bolder")
+      .text("Course Credit")
+  var legend = marks.append("g")
+      .attr("font-family", "sans-serif")
+      .attr("font-size", 11)
+      .attr("text-anchor", "start")
+      .attr("opacity", legend_opac)
+      .selectAll("g")
+      .data(colorCredits.domain().reverse())
+      .enter().append("g")
+      .attr("transform", function(d, i) { return place_legend(i, legend_x, legend_y); });
+  legend.append("rect")
+      .attr('class', 'legendCell')
+      .attr("x", 0)
+      .attr("width", x_1.bandwidth())
+      .attr("height", 19)
+      .attr("fill", colorCredits);
+  legend.append("text")
+      .attr("class", "legendText")
+      .attr("x", x_1.bandwidth() + 5)
+      .attr("y", 9.5)
+      .attr("dy", "0.35em")
+      .text(function(d) { return d; })
+      .filter(function(d, i) { return i  % 2 === 0; })
+        .attr("x", -6)
+        .attr("text-anchor", "end");
+  // Wrap legend labels like rect's
+  d3.selectAll(".legendText").call(wrap, 70);
+}
+function place_legend(i, x, y) {
+  var col_l = get_course_x({year: 'Senior', semester: 1});
+  var col_r = get_course_x({year: 'Senior', semester: 2});
+  var row_t = y + 15;
+  var dy = 26;
+
+  switch (i) {
+    case 0:
+      var x1 = col_l;
+      var y1 = row_t;
+      break;
+    case 1:
+      var x1 = col_r;
+      var y1 = row_t;
+      break;
+    case 2:
+      var x1 = col_l;
+      var y1 = row_t + dy;
+      break;
+    case 3:
+      var x1 = col_r;
+      var y1 = row_t + dy;
+      break;
+  }
+  return "translate(" + x1 + "," + y1 + ")";
+}
 </script>
