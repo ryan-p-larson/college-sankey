@@ -2,10 +2,14 @@
 
 A Sankey diagram of my college courses, using my classes as nodes and class prerequisites as links. Created using [D3.js](https://github.com/d3/d3), the [D3-Sankey plugin](https://github.com/d3/d3-sankey), and [Colorbrewer](http://colorbrewer2.org).
 
+### Live
+
+See it the interactive version live [here!](https://ryan-p-larson.github.io/college-sankey) You can see the static print version [here.](https://ryan-p-larson.github.io/college-sankey/large.html)
+
 
 <img src="data/viz.png"></img>
 
-#### **Unfinished work**
+#### **Completed Work**
 
 - [x] Layout classes by specified X, Y positioning.
 - [x] Color Classes by credits.
@@ -14,8 +18,8 @@ A Sankey diagram of my college courses, using my classes as nodes and class prer
   * See below for details.
 - [x] Adjust labels so there's less overlap.
 - [x] Node alignment, general neatness, etc.
-- [ ] HTML formatting
-- [ ] Proper introduction and explanation of the chart.
+- [x] HTML formatting
+- [x] Proper introduction and explanation of the chart.
 
 ### Changed courses
 
