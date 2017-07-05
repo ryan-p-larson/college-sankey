@@ -1,0 +1,37 @@
+old reposition:
+var reposition = {
+  "PSY:1001": 1000,
+  "PHIL:1033":  1100,
+  "ANTH:1061":  1275,
+  "CINE:1260":  1080,
+  "ANTH:1301":  1475,
+  "MATH:1020":  1250,
+  "STAT:1030":  1425,
+  "CS:2210":    2180,
+  "CS:2520":    2820
+}
+
+new reposition:
+var reposition = {
+  "PHIL:1033":  1100,
+  "ANTH:1061":  1275,
+  "CINE:1260":  1080,
+  "MATH:1020":  1250,
+
+  "CS:1110":    1400,     // Flip intro to CS and human origins
+  "ANTH:1301":  1250,
+
+  "STAT:1030":  1800,     // Flip Stats
+  "RELS:1903":  1100,
+  "PSY:1001":   1200,
+
+  "CS:2520":    2820,
+
+  "PHIL:1401":  1100,     // Flip
+  "GEOG:1050":  1400,     // these two
+
+  "PSY:2501":   2050,
+  "CS:2210":    2400,     // Discrete structures
+  "CS:2230":    2550,     // Data structures
+  "CS:3330":    3000      // Algorithms
+}
