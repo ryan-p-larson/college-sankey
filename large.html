@@ -25,8 +25,8 @@
     display: none;
   }
   .axis--x line {
-    opacity: 0.5;
-    stroke: #333;
+    opacity: 1;
+    stroke: #ddd;
     stroke-dasharray: 2px 3px;
     stroke-width: 1px;
   }
@@ -61,7 +61,6 @@
 
 <script>
 // Setable chart variables
-var div_width = 1000;
 var singleNodeHeight = 19;
 
 // Begin actual charting.
@@ -70,7 +69,7 @@ var margin = {
               top: (abs_width * 0.125),
               right: 5,
               bottom: 25,
-              left: 40
+              left: 60
             };
 
 var width = abs_width - margin.left - margin.right,
@@ -95,7 +94,6 @@ var x_0 = d3.scaleBand()
     colorCredits = d3.scaleOrdinal()
       .domain(["Elective", "Psychology Minor", "Comp Sci Minor", "Informatics Major"])
       .range(["#a6cee3", "#1f78b4", "#b2df8a", "#33a02c"]);
-
 
 var sankey = d3.sankey()
     .nodeId(function(d) { return d.course; })
@@ -148,6 +146,9 @@ d3.json("data/courses.json", function(error, courses) {
     return d;
   });
 
+  draw_boundaries();
+  draw_marks();
+
   // DRAW
   sankey.update(courses);
   link = link
@@ -161,7 +162,8 @@ d3.json("data/courses.json", function(error, courses) {
   node = node
      .data(courses.nodes)
      .enter().append("g")
-     .attr("class", function(d) { return "course " + d.credit.split(" ")[0]; });
+     .attr("class", function(d) { return "course " + d.credit.split(" ")[0]; })
+     .on("click", highlight_node_links);
 
    node.append("rect")
       .attr("class", "node")
@@ -184,8 +186,9 @@ d3.json("data/courses.json", function(error, courses) {
   // adjust labels
   d3.selectAll('.classLabel').call(wrap, 70);
 
-  draw_boundaries();
-  draw_marks();
+  // Fix GeoViz link
+  var dynamicPath = edit_link(courses.nodes);
+  d3.select("#link-23").attr("d", dynamicPath);
 });
 
 function format_course(d) {
@@ -209,15 +212,27 @@ function format_course(d) {
 
   // Assign Y position here, instead of altering course numbers
   var reposition = {
-    "PSY:1001": 1000,
     "PHIL:1033":  1100,
     "ANTH:1061":  1275,
     "CINE:1260":  1080,
-    "ANTH:1301":  1475,
     "MATH:1020":  1250,
-    "STAT:1030":  1425,
-    "CS:2210":    2180,
-    "CS:2520":    2820
+
+    "CS:1110":    1400,     // Flip intro to CS and human origins
+    "ANTH:1301":  1250,
+
+    "STAT:1030":  1800,     // Flip Stats
+    "RELS:1903":  1100,
+    "PSY:1001":   1200,
+
+    "CS:2520":    2820,
+
+    "PHIL:1401":  1100,     // Flip
+    "GEOG:1050":  1400,     // these two
+
+    "PSY:2501":   2050,
+    "CS:2210":    2400,     // Discrete structures
+    "CS:2230":    2550,     // Data structures
+    "CS:3330":    3000      // Algorithms
   }
   if (reposition.hasOwnProperty(d.course)) {
     d.yPos = reposition[d.course];
@@ -279,7 +294,6 @@ function assign_node_class(d) {
   return 'node ' + d.credit.split(" ")[0];
 }
 
-
 function draw_boundaries() {
   marks.append('rect')
     .attr("x", -margin.left)
@@ -293,6 +307,7 @@ function draw_marks() {
   var semester_format = function(d) {
     return (d === 1) ? "1st" : "2nd";
   }
+  var left_align = -15;
 
   // X axis
   var base_y = -margin.top * 0.125;
@@ -309,7 +324,7 @@ function draw_marks() {
       .tickSize(0));
   x_context.append("text")
         .attr("class", "chartLabel")
-        .attr("x", 6)
+        .attr("x", left_align + 5)
         .attr("y", -5)
         .attr("dy", "0.32em")
         .text("Time")
@@ -325,6 +340,7 @@ function draw_marks() {
     .append("path")
     .attr("d", "M2,2 L2,13 L8,7 L2,2");
   x_context.select("path")
+      .attr("transform", "translate(" + left_align + ", 0)")
       .attr("d", "M40,0V0.5.5H1125.5V0")
       .attr("marker-end", "url(#arrowhead)");
   var context_bbox = x_context.node().getBBox();
@@ -364,6 +380,7 @@ function draw_marks() {
   // Course # (Y) Axis
   marks.append("g")
     .attr("class", "axis axis--y")
+    .attr("transform", "translate(" + left_align + ", 0)")
     .call(d3.axisLeft(y)
       .tickFormat(d3.format("d"))
       .ticks(5))
@@ -371,14 +388,17 @@ function draw_marks() {
       .attr("class", "chartLabel")
       .attr("x", 6)
       .attr("dy", "0.71em")
-      .text("Course Number");
+      .text("Course Level +-500");
 
   var text_marks = marks.append("g").attr("class", "textual");
 
   // Title
   var title = text_marks.append("text")
       .attr("class", "chartTitle")
-      .attr("x", 0)
+      .attr("font-family", "Arial")
+      .attr("font-weight", "bolder")
+      .attr("font-size", "16px")
+      .attr("x", left_align + 5)
       .attr("y", -margin.top + 20)
       .attr("dy", "0.35em")
       .text("My College Courses and the Prerequisite Relationships Between Them.");
@@ -387,7 +407,8 @@ function draw_marks() {
   var sub_html = "Each rectangle is a class I took, positioned in the semester I took it. The links between classes show the requirements and progression to take higher level classes."
   var subtitle = text_marks.append("text")
       .attr("class", "chartSubTitle")
-      .attr("x", 0)
+      .attr("font-family", "Arial")
+      .attr("x", left_align + 5)
       .attr("y", -margin.top + 25 + title_bbox.height)
       .attr("dy", "0.35em")
       .text(sub_html);
@@ -397,14 +418,20 @@ function draw_marks() {
   var subtitle_bbox = subtitle.node().getBBox();
   subtitle.selectAll('tspan').attr("y", title_bbox.y + title_bbox.height + subtitle_bbox.height - 10);
 
+  // Add signature
+  var signature = text_marks.append("text")
+      .attr("x", left_align + 5)
+      .attr("y", subtitle_bbox.y + subtitle_bbox.height + 12)
+      .attr("dy", "0.35em")
+      .attr("font-size", "10px")
+      .attr("font-family", "Arial")
+      .text("- Ryan Larson");
+
   // Margin Legend
   var legend_x = get_course_x({year: 'Senior', semester: 1}),
-      //legend_y = -margin.top * 0.9,
-      //legend_y = title_bbox.y + title_bbox.height,
       legend_y = -margin.top + 20,
       legend_opac = 1;
   marks.append("text")
-      //.attr("class", "chartLabel")
       .attr("x", legend_x)
       .attr("y", legend_y)
       .attr("dy", "0.35em")
@@ -435,6 +462,7 @@ function draw_marks() {
       .filter(function(d, i) { return i  % 2 === 0; })
         .attr("x", -6)
         .attr("text-anchor", "end");
+
   // Wrap legend labels like rect's
   d3.selectAll(".legendText").call(wrap, 70);
 }
@@ -463,5 +491,64 @@ function place_legend(i, x, y) {
       break;
   }
   return "translate(" + x1 + "," + y1 + ")";
+}
+
+function highlight_node_links(node,i){
+    var remainingNodes=[],
+        nextNodes=[];
+    var stroke_opacity = 0;
+    if( d3.select(this).attr("data-clicked") == "1" ){
+      d3.select(this)
+        .attr("data-clicked","0")
+        .style('stroke-opacity', null)
+        .style('stroke-width', null);
+      stroke_opacity = 0.2;
+    }else{
+      stroke_opacity = 0.5;
+
+      d3.select(this)
+        .attr("data-clicked","1")
+        .style('stroke-opacity', 0.75)
+        .style('stroke-width', '2px');
+    }
+    var traverse = [{
+                      linkType : "sourceLinks",
+                      nodeType : "target"
+                    },{
+                      linkType : "targetLinks",
+                      nodeType : "source"
+                    }];
+    traverse.forEach(function(step){
+      node[step.linkType].forEach(function(link) {
+        remainingNodes.push(link[step.nodeType]);
+        highlight_link(link.id, stroke_opacity);
+      });
+      while (remainingNodes.length) {
+        nextNodes = [];
+        remainingNodes.forEach(function(node) {
+          node[step.linkType].forEach(function(link) {
+            nextNodes.push(link[step.nodeType]);
+            highlight_link(link.id, stroke_opacity);
+          });
+        });
+        remainingNodes = nextNodes;
+      }
+    });
+  }
+function highlight_link(id,opacity){
+      d3.select("#link-"+id).style("stroke-opacity", opacity);
+  }
+
+function edit_link(nodes) {
+  var foundations = nodes.filter(function(d) { return d.course === "GEOG:1050"; })[0];
+  var gviz = nodes.filter(function(d) { return d.course === "GEOG:3540"; })[0];
+
+  var x = foundations.x0;
+  var y = (foundations.y0 + foundations.y1) / 2;
+  var dy = y - ((gviz.y0 + gviz.y1) / 2);
+
+  var newPath = "M"+ x +","+ y +"c-18,0-16.5-"+ dy +",0-" + dy;
+
+  return newPath;
 }
 </script>
